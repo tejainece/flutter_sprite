@@ -1,16 +1,51 @@
 # flutter_sprite
 
-Spritesheet support for Flutter
+## Usage
 
-## Getting Started
+### Spritesheet
 
-This project is a starting point for a Flutter application.
+Spritesheet can be loaded from the flutter assets. Make sure you put the spritesheet json spec and the images in the
+assets directory.
 
-A few resources to get you started if this is your first Flutter project:
+### Loading the sprite
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Use `Sprite.load` to load a sprite from the flutter assets.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```dart
+Future<void> loadSprite() async {
+  Sprite sprite = await Sprite.load('asset/swords_man/sprite.json');
+}
+```
+
+### Displaying and animating the sprite
+
+```dart
+Widget build(BuildContext context) async {
+  return SpriteWidget(sprite);
+}
+```
+
+### Control the animation
+
+The sprite playback can be paused and restarted at any time using `SpriteController`. `SpriteController` is obtained
+using `onReady` callback.
+
+```dart
+Widget build(BuildContext context) async {
+  return SpriteWidget(sprite, onReady: (controller) {
+    Timer(Duration(seconds: 10), () {
+      controller.pause();
+
+      Timer(Duration(seconds: 10), () {
+        controller.play();
+      });
+    });
+  });
+}
+```
+
+## TODO
+
++ [ ] Control looping
++ [ ] Play from specific point
++ [ ] Reverse?

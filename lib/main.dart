@@ -9,9 +9,8 @@ void main() async {
   final sprite = await Sprite.load('asset/swords_man/sprite.json');
   // runApp(MyApp());
 
-  SpriteController controller;
-
-  runApp(Directionality(
+  runApp(
+    Directionality(
       textDirection: TextDirection.ltr,
       child: SpriteWidget(sprite, onReady: (controller) {
         Timer(Duration(seconds: 10), () {
@@ -21,7 +20,9 @@ void main() async {
             controller.play();
           });
         });
-      })));
+      }),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

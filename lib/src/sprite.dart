@@ -63,7 +63,7 @@ class Sprite {
             portion.offset.y, portion.size.x, portion.size.y);
         image = MemoryImage(Uint8List.fromList(imgtool.encodePng(img)));
       }
-      // image.resolve(ImageConfiguration.empty);
+      image.resolve(ImageConfiguration.empty);
       frames.add(SpriteFrame(image,
           anchor: spriteSpec.anchor, interval: spriteSpec.interval));
     }

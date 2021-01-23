@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_sprite/src/format.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+
+import 'package:image/image.dart' as imgtool;
 
 class SpriteFrame {
   final ImageProvider image;
@@ -36,6 +41,8 @@ class Sprite {
 
     final frames = <SpriteFrame>[];
 
+    final cache = <String, imgtool.Image>{};
+
     for (final spriteSpec in spec.sprites) {
       final path = p.join(dir, spriteSpec.uri);
 
@@ -43,9 +50,18 @@ class Sprite {
       if (spriteSpec.portion == null) {
         image = AssetImage(path);
       } else {
-        final bytes = rootBundle.load(path);
-        // TODO
+        imgtool.Image wholeImage = cache[path];
+        if (wholeImage == null) {
+          final data = await rootBundle.load(path);
+          wholeImage = imgtool.decodeImage(data.buffer.asUint8List());
+          cache[path] = wholeImage;
+        }
+        final portion = spriteSpec.portion;
+        final img = imgtool.copyCrop(wholeImage, portion.offset.x,
+            portion.offset.y, portion.size.x, portion.size.y);
+        image = MemoryImage(Uint8List.fromList(imgtool.encodePng(img)));
       }
+      // image.resolve(ImageConfiguration.empty);
       frames.add(SpriteFrame(image, anchor: spriteSpec.anchor));
     }
 

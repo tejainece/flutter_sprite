@@ -1,14 +1,14 @@
 import 'dart:math';
 
 class SpriteSheetPortion {
-  final Point<num> position;
+  final Point<num> offset;
 
   final Point<num> size;
 
-  SpriteSheetPortion(this.position, this.size);
+  SpriteSheetPortion(this.offset, this.size);
 
   Map<String, dynamic> toJson() => {
-        'position': position.toJson(),
+        'offset': offset.toJson(),
         'size': size.toJson(),
       };
 
@@ -17,10 +17,10 @@ class SpriteSheetPortion {
       return null;
     }
 
-    if (m['position'] == null) {
-      throw Exception('position is mandatory');
-    } else if (m['position'] is! String) {
-      throw Exception('invalid position');
+    if (m['offset'] == null) {
+      throw Exception('offset is mandatory');
+    } else if (m['offset'] is! String) {
+      throw Exception('invalid offset');
     }
     if (m['size'] == null) {
       throw Exception('size is mandatory');
@@ -28,7 +28,7 @@ class SpriteSheetPortion {
       throw Exception('invalid size');
     }
     return SpriteSheetPortion(
-        _PointExt.fromJson(m['position']), _PointExt.fromJson(m['size']));
+        _PointExt.fromJson(m['offset']), _PointExt.fromJson(m['size']));
   }
 }
 
@@ -46,7 +46,7 @@ class SpriteSheetSprite {
     return {
       'uri': uri,
       if (anchor != null) 'anchor': anchor.toJson(),
-      if (portion != null) 'position': portion.toJson(),
+      if (portion != null) 'portion': portion.toJson(),
     };
   }
 
@@ -118,16 +118,16 @@ class SpriteSheetSpec {
 extension _PointExt on Point<num> {
   String toJson() => '$x:$y';
 
-  static Point<num> fromJson(String v) {
-    if (v == null) {
+  static Point<num> fromJson(String str) {
+    if (str == null) {
       return null;
     }
 
-    final parts = v.split(':').map(num.tryParse).toList();
+    final parts = str.split(':').map(num.tryParse).toList();
     if (parts.length != 2) {
-      throw Exception('invalid format');
+      throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
     } else if (parts.any((element) => element == null)) {
-      throw Exception('invalid format');
+      throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
     }
 
     return Point<num>(parts[0], parts[1]);

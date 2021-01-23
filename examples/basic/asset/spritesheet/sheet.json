@@ -1,0 +1,34 @@
+{
+  "interval": 100,
+  "size": "128:128",
+  "sprites": [
+    {
+      "uri": "sheet.png",
+      "portion": {
+        "offset": "0:0",
+        "size": "128:128"
+      }
+    },
+    {
+      "uri": "sheet.png",
+      "portion": {
+        "offset": "128:0",
+        "size": "128:128"
+      }
+    },
+    {
+      "uri": "sheet.png",
+      "portion": {
+        "offset": "0:128",
+        "size": "128:128"
+      }
+    },
+    {
+      "uri": "sheet.png",
+      "portion": {
+        "offset": "128:128",
+        "size": "128:128"
+      }
+    }
+  ]
+}

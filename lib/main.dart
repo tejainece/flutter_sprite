@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_sprite/flutter_sprite.dart';
@@ -5,7 +7,21 @@ import 'package:flutter_sprite/flutter_sprite.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final sprite = await Sprite.load('asset/swords_man/sprite.json');
-  runApp(MyApp());
+  // runApp(MyApp());
+
+  SpriteController controller;
+
+  runApp(Directionality(
+      textDirection: TextDirection.ltr,
+      child: SpriteWidget(sprite, onReady: (controller) {
+        Timer(Duration(seconds: 10), () {
+          controller.pause();
+
+          Timer(Duration(seconds: 10), () {
+            controller.play();
+          });
+        });
+      })));
 }
 
 class MyApp extends StatelessWidget {

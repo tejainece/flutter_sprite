@@ -39,7 +39,9 @@ class SpriteSheetSprite {
 
   final SpriteSheetPortion portion;
 
-  SpriteSheetSprite(this.uri, {Point<num> anchor, this.portion})
+  final Duration interval;
+
+  SpriteSheetSprite(this.uri, {Point<num> anchor, this.portion, this.interval})
       : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() {
@@ -47,6 +49,7 @@ class SpriteSheetSprite {
       'uri': uri,
       if (anchor != null) 'anchor': anchor.toJson(),
       if (portion != null) 'portion': portion.toJson(),
+      if (interval != null) 'interval': interval.inMilliseconds,
     };
   }
 

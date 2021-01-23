@@ -10,9 +10,12 @@ class SpriteWidget extends StatefulWidget {
 
   final bool play;
 
+  final bool loop;
+
   final SpriteWidgetReady onReady;
 
-  SpriteWidget(this.sprite, {this.play = true, this.onReady, Key key})
+  SpriteWidget(this.sprite,
+      {this.play = true, this.loop = true, this.onReady, Key key})
       : super(key: key);
 
   @override
@@ -28,6 +31,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 
   final _cache = <int, Widget>{};
 
+  bool loop = true;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +41,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     if (widget.onReady != null) {
       widget.onReady(spriteController);
     }
+    
+    loop = widget.loop;
 
     if (widget.play) {
       play();
@@ -74,9 +81,12 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   }
 
   Duration _getNextDuration() {
-    final duration = widget.sprite.interval;
-    // TODO check if frame has its own interval
-    return duration;
+    final frameInterval = widget.sprite.frames[_index].interval;
+    if (frameInterval != null) {
+      return frameInterval;
+    } else {
+      return widget.sprite.interval;
+    }
   }
 
   void _pause() {
@@ -88,20 +98,31 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   }
 
   void _start() {
-    final duration = _getNextDuration();
-    // TODO check if frame has its own interval
+    if (_index == widget.sprite.frames.length - 1) {
+      setState(() {
+        _index = 0;
+      });
+    }
+    Duration duration = _getNextDuration();
     _timer = Timer(duration, _next);
   }
 
   void _next() {
-    setState(() {
-      _index++;
-      _index = _index % widget.sprite.frames.length;
-    });
-    _timer = Timer(_getNextDuration(), _next);
+    _timer = null;
+    if (loop || _index < widget.sprite.frames.length - 1) {
+      setState(() {
+        _index++;
+        _index = _index % widget.sprite.frames.length;
+      });
+      _timer = Timer(_getNextDuration(), _next);
+    }
   }
 
   void play() {
+    if (_timer != null) {
+      return;
+    }
+
     _start();
   }
 
@@ -124,4 +145,8 @@ class SpriteController {
   void play() => _state.play();
 
   void pause() => _state.pause();
+
+  bool get loop => _state.loop;
+
+  set loop(bool value) => _state.loop = value;
 }

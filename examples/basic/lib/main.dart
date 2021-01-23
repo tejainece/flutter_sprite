@@ -14,15 +14,7 @@ void main() async {
       textDirection: TextDirection.ltr,
       child: Wrap(
         children: [
-          SpriteWidget(sprite1, onReady: (controller) {
-            Timer(Duration(seconds: 10), () {
-              controller.pause();
-
-              Timer(Duration(seconds: 10), () {
-                controller.play();
-              });
-            });
-          }),
+          SpriteWidget(sprite1),
           SpriteWidget(sprite2, onReady: (controller) {
             Timer(Duration(seconds: 10), () {
               controller.pause();

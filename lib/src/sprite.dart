@@ -17,7 +17,9 @@ class SpriteFrame {
 
   final Point<num> anchor;
 
-  SpriteFrame(this.image, {Point<num> anchor})
+  final Duration interval;
+
+  SpriteFrame(this.image, {Point<num> anchor, this.interval})
       : anchor = anchor ?? const Point<num>(0, 0);
 }
 
@@ -62,7 +64,8 @@ class Sprite {
         image = MemoryImage(Uint8List.fromList(imgtool.encodePng(img)));
       }
       // image.resolve(ImageConfiguration.empty);
-      frames.add(SpriteFrame(image, anchor: spriteSpec.anchor));
+      frames.add(SpriteFrame(image,
+          anchor: spriteSpec.anchor, interval: spriteSpec.interval));
     }
 
     return Sprite(spec.interval, frames, spec.size, spec.anchor);

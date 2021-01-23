@@ -46,6 +46,4 @@ Widget build(BuildContext context) async {
 
 ## TODO
 
-+ [ ] Control looping
 + [ ] Play from specific point
-+ [ ] Reverse?

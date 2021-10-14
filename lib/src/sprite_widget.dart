@@ -12,10 +12,10 @@ class SpriteWidget extends StatefulWidget {
 
   final bool loop;
 
-  final SpriteWidgetReady onReady;
+  final SpriteWidgetReady? onReady;
 
   SpriteWidget(this.sprite,
-      {this.play = true, this.loop = true, this.onReady, Key key})
+      {this.play = true, this.loop = true, this.onReady, Key? key})
       : super(key: key);
 
   @override
@@ -23,9 +23,9 @@ class SpriteWidget extends StatefulWidget {
 }
 
 class _SpriteWidgetState extends State<SpriteWidget> {
-  SpriteController spriteController;
+  late SpriteController spriteController;
 
-  Timer _timer;
+  Timer? _timer;
 
   int _index = 0;
 
@@ -39,7 +39,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 
     spriteController = SpriteController(this);
     if (widget.onReady != null) {
-      widget.onReady(spriteController);
+      widget.onReady!(spriteController);
     }
     
     loop = widget.loop;
@@ -57,21 +57,21 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       return Container();
     }
 
-    Widget image = _cache[_index];
+    Widget? image = _cache[_index];
     if (image == null) {
       final sprite = sheet.frames[_index];
       final offset = sheet.anchor - sprite.anchor;
       image = Positioned(
         child: Image(image: sprite.image),
-        left: offset.x,
-        top: offset.y,
+        left: offset.x.toDouble(),
+        top: offset.y.toDouble(),
       );
       _cache[_index] = image;
     }
 
     return Container(
-      width: sheet.size.x,
-      height: sheet.size.y,
+      width: sheet.size.x.toDouble(),
+      height: sheet.size.y.toDouble(),
       child: Stack(
         children: [
           image,
@@ -92,7 +92,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   void _pause() {
     // TODO keep track of elapsed duration?
     if (_timer != null) {
-      _timer.cancel();
+      _timer!.cancel();
     }
     _timer = null;
   }

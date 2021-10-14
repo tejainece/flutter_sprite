@@ -12,7 +12,7 @@ class SpriteSheetPortion {
         'size': size.toJson(),
       };
 
-  static SpriteSheetPortion fromJson(Map m) {
+  static SpriteSheetPortion? fromJson(Map? m) {
     if (m == null) {
       return null;
     }
@@ -28,32 +28,32 @@ class SpriteSheetPortion {
       throw Exception('invalid size');
     }
     return SpriteSheetPortion(
-        _PointExt.fromJson(m['offset']), _PointExt.fromJson(m['size']));
+        _PointExt.fromJson(m['offset'])!, _PointExt.fromJson(m['size'])!);
   }
 }
 
 class SpriteSheetSprite {
   final String uri;
 
-  final Point<num> anchor;
+  final Point<num>? anchor;
 
-  final SpriteSheetPortion portion;
+  final SpriteSheetPortion? portion;
 
-  final Duration interval;
+  final Duration? interval;
 
-  SpriteSheetSprite(this.uri, {Point<num> anchor, this.portion, this.interval})
+  SpriteSheetSprite(this.uri, {Point<num>? anchor, this.portion, this.interval})
       : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() {
     return {
       'uri': uri,
-      if (anchor != null) 'anchor': anchor.toJson(),
-      if (portion != null) 'portion': portion.toJson(),
-      if (interval != null) 'interval': interval.inMilliseconds,
+      if (anchor != null) 'anchor': anchor!.toJson(),
+      if (portion != null) 'portion': portion!.toJson(),
+      if (interval != null) 'interval': interval!.inMilliseconds,
     };
   }
 
-  static SpriteSheetSprite fromJson(Map map, {Point<num> defaultAnchor}) {
+  static SpriteSheetSprite? fromJson(Map? map, {Point<num>? defaultAnchor}) {
     if (map == null) {
       return null;
     }
@@ -75,14 +75,14 @@ class SpriteSheetSpec {
   final List<SpriteSheetSprite> sprites;
 
   SpriteSheetSpec(this.sprites, this.interval, this.size, Point<num> anchor)
-      : anchor = anchor ?? Point(0, 0);
+      : anchor = anchor;
 
   Map<String, dynamic> toJson() => {
         'interval': interval.inMilliseconds,
         'sprites': sprites.map((e) => e.toJson()).toList(),
       };
 
-  static SpriteSheetSpec fromJson(Map map) {
+  static SpriteSheetSpec? fromJson(Map? map) {
     if (map == null) {
       return null;
     }
@@ -110,10 +110,10 @@ class SpriteSheetSpec {
     return SpriteSheetSpec(
         (map['sprites'] as List)
             .cast<Map>()
-            .map((e) => SpriteSheetSprite.fromJson(e, defaultAnchor: anchor))
+            .map((e) => SpriteSheetSprite.fromJson(e, defaultAnchor: anchor)!)
             .toList(),
         Duration(milliseconds: map['interval']),
-        _PointExt.fromJson(map['size']),
+        _PointExt.fromJson(map['size'])!,
         anchor);
   }
 }
@@ -121,7 +121,7 @@ class SpriteSheetSpec {
 extension _PointExt on Point<num> {
   String toJson() => '$x:$y';
 
-  static Point<num> fromJson(String str) {
+  static Point<num>? fromJson(String? str) {
     if (str == null) {
       return null;
     }
@@ -133,6 +133,6 @@ extension _PointExt on Point<num> {
       throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
     }
 
-    return Point<num>(parts[0], parts[1]);
+    return Point<num>(parts[0]!, parts[1]!);
   }
 }

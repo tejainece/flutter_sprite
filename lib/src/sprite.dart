@@ -17,9 +17,9 @@ class SpriteFrame {
 
   final Point<num> anchor;
 
-  final Duration interval;
+  final Duration? interval;
 
-  SpriteFrame(this.image, {Point<num> anchor, this.interval})
+  SpriteFrame(this.image, {Point<num>? anchor, this.interval})
       : anchor = anchor ?? const Point<num>(0, 0);
 }
 
@@ -37,7 +37,7 @@ class Sprite {
   static Future<Sprite> load(String specPath) async {
     final jsonStr = await rootBundle.loadString(specPath);
     final json = jsonDecode(jsonStr);
-    final spec = SpriteSheetSpec.fromJson(json);
+    final spec = SpriteSheetSpec.fromJson(json)!;
 
     final dir = p.dirname(specPath);
 
@@ -52,15 +52,19 @@ class Sprite {
       if (spriteSpec.portion == null) {
         image = AssetImage(path);
       } else {
-        imgtool.Image wholeImage = cache[path];
+        imgtool.Image? wholeImage = cache[path];
         if (wholeImage == null) {
           final data = await rootBundle.load(path);
           wholeImage = imgtool.decodeImage(data.buffer.asUint8List());
-          cache[path] = wholeImage;
+          cache[path] = wholeImage!;
         }
-        final portion = spriteSpec.portion;
-        final img = imgtool.copyCrop(wholeImage, portion.offset.x,
-            portion.offset.y, portion.size.x, portion.size.y);
+        final portion = spriteSpec.portion!;
+        final img = imgtool.copyCrop(
+            wholeImage,
+            portion.offset.x.toInt(),
+            portion.offset.y.toInt(),
+            portion.size.x.toInt(),
+            portion.size.y.toInt());
         image = MemoryImage(Uint8List.fromList(imgtool.encodePng(img)));
       }
       image.resolve(ImageConfiguration.empty);

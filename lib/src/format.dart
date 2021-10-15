@@ -74,12 +74,14 @@ class SpriteSheetSpec {
 
   final List<SpriteSheetSprite> sprites;
 
-  SpriteSheetSpec(this.sprites, this.interval, this.size, Point<num> anchor)
-      : anchor = anchor;
+  SpriteSheetSpec(this.sprites, this.interval, this.size, {Point<num>? anchor})
+      : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() => {
         'interval': interval.inMilliseconds,
         'sprites': sprites.map((e) => e.toJson()).toList(),
+        'size': size.toJson(),
+        if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
       };
 
   static SpriteSheetSpec? fromJson(Map? map) {
@@ -103,9 +105,11 @@ class SpriteSheetSpec {
       throw Exception('interval should be positive integer');
     }
 
-    // TODO Validate size
+    if (map['size'] == null || map['size'] is! String) {
+      throw Exception('missing or invalid size property on sprite sheet');
+    }
 
-    final anchor = _PointExt.fromJson(map['anchor']) ?? Point<num>(0, 0);
+    final anchor = _PointExt.fromJson(map['anchor']);
 
     return SpriteSheetSpec(
         (map['sprites'] as List)
@@ -114,7 +118,7 @@ class SpriteSheetSpec {
             .toList(),
         Duration(milliseconds: map['interval']),
         _PointExt.fromJson(map['size'])!,
-        anchor);
+        anchor: anchor);
   }
 }
 

@@ -1,47 +1,48 @@
 {
+	"name": "turkey_idle_sw",
 	"interval": 100,
-	"anchor": "27:19",
-	"size": "50:33",
+	"size": "40:25",
+	"anchor": "14:18",
 	"sprites": [
 		{
 			"uri": "00.png",
-			"anchor": "27:19"
+			"anchor": "11:18"
 		},
 		{
 			"uri": "01.png",
-			"anchor": "27:19"
+			"anchor": "12:17"
 		},
 		{
 			"uri": "02.png",
-			"anchor": "27:19"
+			"anchor": "13:17"
 		},
 		{
 			"uri": "03.png",
-			"anchor": "27:19"
+			"anchor": "14:17"
 		},
 		{
 			"uri": "04.png",
-			"anchor": "27:19"
+			"anchor": "14:17"
 		},
 		{
 			"uri": "05.png",
-			"anchor": "27:19"
+			"anchor": "14:17"
 		},
 		{
 			"uri": "06.png",
-			"anchor": "27:19"
+			"anchor": "14:17"
 		},
 		{
 			"uri": "07.png",
-			"anchor": "27:19"
+			"anchor": "13:18"
 		},
 		{
 			"uri": "08.png",
-			"anchor": "27:19"
+			"anchor": "13:18"
 		},
 		{
 			"uri": "09.png",
-			"anchor": "26:19"
+			"anchor": "12:18"
 		}
 	]
 }

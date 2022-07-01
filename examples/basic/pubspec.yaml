@@ -23,3 +23,5 @@ flutter:
   assets:
     - asset/swords_man/
     - asset/spritesheet/
+    - asset/mangotree/
+    - asset/turkey/

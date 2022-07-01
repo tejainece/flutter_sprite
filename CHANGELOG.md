@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0
+
++ Sprite frame translate
++ Performance improvements
+
 ## 2.0.0
 
 + Null safety

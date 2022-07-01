@@ -47,3 +47,4 @@ Widget build(BuildContext context) async {
 ## TODO
 
 + [ ] Play from specific point
++ [ ] Animation controls to debug animations

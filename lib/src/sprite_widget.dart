@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_sprite/src/image_clipper.dart';
 import 'package:flutter_sprite/src/sprite.dart';
 
 typedef SpriteWidgetReady = void Function(SpriteController controller);
@@ -29,8 +30,6 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 
   int _index = 0;
 
-  final _cache = <int, Widget>{};
-
   bool loop = true;
 
   @override
@@ -41,7 +40,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     if (widget.onReady != null) {
       widget.onReady!(spriteController);
     }
-    
+
     loop = widget.loop;
 
     if (widget.play) {
@@ -54,27 +53,23 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     final sheet = widget.sprite;
 
     if (sheet.frames.isEmpty) {
-      return Container();
-    }
-
-    Widget? image = _cache[_index];
-    if (image == null) {
-      final sprite = sheet.frames[_index];
-      final offset = sheet.anchor - sprite.anchor;
-      image = Positioned(
-        child: Image(image: sprite.image),
-        left: offset.x.toDouble(),
-        top: offset.y.toDouble(),
+      return Container(
+        width: sheet.size.x.toDouble(),
+        height: sheet.size.y.toDouble(),
       );
-      _cache[_index] = image;
     }
 
+    final sprite = sheet.frames[_index];
     return Container(
       width: sheet.size.x.toDouble(),
       height: sheet.size.y.toDouble(),
       child: Stack(
         children: [
-          image,
+          Positioned(
+            left: sprite.translate.x.toDouble(),
+            top: sprite.translate.y.toDouble(),
+            child: ClippedImage(image: sprite.image, portion: sprite.portion),
+          ),
         ],
       ),
     );

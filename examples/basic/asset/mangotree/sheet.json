@@ -1,0 +1,12 @@
+{
+	"name": "apple_bush",
+	"interval": 100,
+	"size": "71:50",
+	"anchor": "35:32",
+	"sprites": [
+		{
+			"uri": "00.png",
+			"anchor": "35:32"
+		}
+	]
+}

@@ -1,26 +1,27 @@
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_sprite/src/format.dart';
+import 'package:flutter_sprite/src/image_clipper.dart';
 import 'package:path/path.dart' as p;
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import 'package:image/image.dart' as imgtool;
-
 class SpriteFrame {
-  final ImageProvider image;
+  final ui.Image image;
 
-  final Point<num> anchor;
+  final SpriteSheetPortion portion;
+
+  final Point<num> translate;
 
   final Duration? interval;
 
-  SpriteFrame(this.image, {Point<num>? anchor, this.interval})
-      : anchor = anchor ?? const Point<num>(0, 0);
+  SpriteFrame(this.image,
+      {this.translate = const Point<num>(0, 0),
+      this.interval,
+      SpriteSheetPortion? portion})
+      : portion = portion ??
+            SpriteSheetPortion(Point(0, 0), Point(image.width, image.height));
 }
 
 class Sprite {
@@ -35,7 +36,7 @@ class Sprite {
   Sprite(this.interval, this.frames, this.size, this.anchor);
 
   static Future<Sprite> load(String specPath) async {
-    final jsonStr = await rootBundle.loadString(specPath);
+    final jsonStr = await rootBundle.loadString(specPath, cache: false);
     final json = jsonDecode(jsonStr);
     final spec = SpriteSheetSpec.fromJson(json)!;
 
@@ -43,33 +44,28 @@ class Sprite {
 
     final frames = <SpriteFrame>[];
 
-    final cache = <String, imgtool.Image>{};
+    final cache = <String, ui.Image>{};
 
     for (final spriteSpec in spec.sprites) {
       final path = p.join(dir, spriteSpec.uri);
 
-      ImageProvider image;
-      if (spriteSpec.portion == null) {
-        image = AssetImage(path);
+      ui.Image image;
+      if (!cache.containsKey(path)) {
+        image = await loadImage(path);
+        cache[path] = image;
       } else {
-        imgtool.Image? wholeImage = cache[path];
-        if (wholeImage == null) {
-          final data = await rootBundle.load(path);
-          wholeImage = imgtool.decodeImage(data.buffer.asUint8List());
-          cache[path] = wholeImage!;
-        }
-        final portion = spriteSpec.portion!;
-        final img = imgtool.copyCrop(
-            wholeImage,
-            portion.offset.x.toInt(),
-            portion.offset.y.toInt(),
-            portion.size.x.toInt(),
-            portion.size.y.toInt());
-        image = MemoryImage(Uint8List.fromList(imgtool.encodePng(img)));
+        image = cache[path]!;
       }
-      image.resolve(ImageConfiguration.empty);
+
+      Point<num> offset = spriteSpec.translate ?? Point<num>(0, 0);
+      if (spriteSpec.anchor != null) {
+        offset = offset + spec.anchor - spriteSpec.anchor!;
+      }
+
       frames.add(SpriteFrame(image,
-          anchor: spriteSpec.anchor, interval: spriteSpec.interval));
+          translate: offset,
+          interval: spriteSpec.interval,
+          portion: spriteSpec.portion));
     }
 
     return Sprite(spec.interval, frames, spec.size, spec.anchor);

@@ -37,9 +37,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     super.initState();
 
     spriteController = SpriteController(this);
-    if (widget.onReady != null) {
-      widget.onReady!(spriteController);
-    }
+    widget.onReady?.call(spriteController);
 
     loop = widget.loop;
 

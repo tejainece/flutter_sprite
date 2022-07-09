@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1
+
++ `Anchored` widget
+
 ## 3.0.0
 
 + Sprite frame translate

@@ -16,10 +16,13 @@ class SpriteFrame {
 
   final Duration? interval;
 
+  final bool flip;
+
   SpriteFrame(this.image,
       {this.translate = const Point<num>(0, 0),
       this.interval,
-      SpriteSheetPortion? portion})
+      SpriteSheetPortion? portion,
+      this.flip = false})
       : portion = portion ??
             SpriteSheetPortion(Point(0, 0), Point(image.width, image.height));
 }
@@ -56,16 +59,27 @@ class Sprite {
       } else {
         image = cache[path]!;
       }
+      final portion = spriteSpec.portion ??
+          SpriteSheetPortion(Point(0, 0), Point(image.width, image.height));
+      bool flip = spriteSpec.flip ?? spec.flip ?? false;
 
       Point<num> offset = spriteSpec.translate ?? Point<num>(0, 0);
       if (spriteSpec.anchor != null) {
-        offset = offset + spec.anchor - spriteSpec.anchor!;
+        Point<num> spriteAnchor = spriteSpec.anchor!;
+        if (flip) {
+          spriteAnchor = Point(spec.size.x - spec.anchor.x, spec.anchor.y) -
+              Point(portion.size.x - spriteAnchor.x, spriteAnchor.y);
+        } else {
+          spriteAnchor = spec.anchor - spriteAnchor;
+    }
+        offset = offset + spriteAnchor;
       }
 
       frames.add(SpriteFrame(image,
           translate: offset,
           interval: spriteSpec.interval,
-          portion: spriteSpec.portion));
+          portion: portion,
+          flip: flip));
     }
 
     return Sprite(spec.interval, frames, spec.size, spec.anchor);

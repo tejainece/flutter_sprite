@@ -50,8 +50,10 @@ class SpriteSheetSprite {
 
   final Duration? interval;
 
+  final bool? flip;
+
   SpriteSheetSprite(this.uri,
-      {this.anchor, this.translate, this.portion, this.interval});
+      {this.anchor, this.translate, this.portion, this.interval, this.flip});
 
   Map<String, dynamic> toJson() {
     return {
@@ -60,6 +62,7 @@ class SpriteSheetSprite {
       if (translate != null) 'translate': translate!.toJson(),
       if (portion != null) 'portion': portion!.toJson(),
       if (interval != null) 'interval': interval!.inMilliseconds,
+      if (flip != null) 'flip': flip,
     };
   }
 
@@ -72,6 +75,7 @@ class SpriteSheetSprite {
       anchor: _PointExt.fromJson(map['anchor']),
       translate: _PointExt.fromJson(map['translate']),
       portion: SpriteSheetPortion.fromJson(map['portion']),
+      flip: map['flip'],
     );
   }
 }
@@ -85,7 +89,10 @@ class SpriteSheetSpec {
 
   final List<SpriteSheetSprite> sprites;
 
-  SpriteSheetSpec(this.sprites, this.interval, this.size, {Point<num>? anchor})
+  final bool? flip;
+
+  SpriteSheetSpec(this.sprites, this.interval, this.size,
+      {Point<num>? anchor, this.flip})
       : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() => {
@@ -93,6 +100,7 @@ class SpriteSheetSpec {
         'sprites': sprites.map((e) => e.toJson()).toList(),
         'size': size.toJson(),
         if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
+        if (flip != null) 'flip': flip,
       };
 
   static SpriteSheetSpec? fromJson(Map? map) {
@@ -129,7 +137,8 @@ class SpriteSheetSpec {
             .toList(),
         Duration(milliseconds: map['interval']),
         _PointExt.fromJson(map['size'])!,
-        anchor: anchor);
+        anchor: anchor,
+        flip: map['flip']);
   }
 }
 

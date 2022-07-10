@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.2
+
++ Horizontal `flip` feature
+
 ## 3.0.1
 
 + `Anchored` widget

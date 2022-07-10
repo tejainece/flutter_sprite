@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_sprite/src/image_clipper.dart';
@@ -58,6 +59,15 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     }
 
     final sprite = sheet.frames[_index];
+    Widget child = ClippedImage(image: sprite.image, portion: sprite.portion);
+    if(sprite.flip) {
+      child = Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.rotationY(pi),
+        child: child,
+      );
+    }
+
     return Container(
       width: sheet.size.x.toDouble(),
       height: sheet.size.y.toDouble(),
@@ -66,7 +76,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
           Positioned(
             left: sprite.translate.x.toDouble(),
             top: sprite.translate.y.toDouble(),
-            child: ClippedImage(image: sprite.image, portion: sprite.portion),
+            child: child,
           ),
         ],
       ),

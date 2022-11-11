@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_sprite: ^2.0.0
-  cupertino_icons: ^1.0.1
+  flutter_sprite: ^3.0.2
+  cupertino_icons: ^1.0.5
 
 dev_dependencies:
 

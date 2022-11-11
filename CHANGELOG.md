@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3
+
++ `SpriteWidget.onFinish`
+
 ## 3.0.2
 
 + Horizontal `flip` feature

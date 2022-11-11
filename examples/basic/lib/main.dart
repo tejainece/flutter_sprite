@@ -29,6 +29,15 @@ void main() async {
           }),
           Container(child: SpriteWidget(mangoTree), color: Colors.blue),
           Container(child: SpriteWidget(turkey), color: Colors.blue),
+          Container(
+              child: SpriteWidget(
+                turkey,
+                loop: false,
+                onFinish: () {
+                  print('finished!');
+                },
+              ),
+              color: Colors.blue),
         ],
       ),
     ),

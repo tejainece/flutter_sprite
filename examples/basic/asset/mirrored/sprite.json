@@ -1,0 +1,48 @@
+{
+  "interval": 100,
+  "anchor": "33:74",
+  "size": "148:89",
+  "flip": true,
+  "sprites": [
+    {
+      "uri": "../swords_man/00.png",
+      "anchor": "33:68"
+    },
+    {
+      "uri": "../swords_man/01.png",
+      "anchor": "33:69"
+    },
+    {
+      "uri": "../swords_man/02.png",
+      "anchor": "33:70"
+    },
+    {
+      "uri": "../swords_man/03.png",
+      "anchor": "31:68"
+    },
+    {
+      "uri": "../swords_man/04.png",
+      "anchor": "29:65"
+    },
+    {
+      "uri": "../swords_man/05.png",
+      "anchor": "26:74"
+    },
+    {
+      "uri": "../swords_man/06.png",
+      "anchor": "19:69"
+    },
+    {
+      "uri": "../swords_man/07.png",
+      "anchor": "10:64"
+    },
+    {
+      "uri": "../swords_man/08.png",
+      "anchor": "7:45"
+    },
+    {
+      "uri": "../swords_man/09.png",
+      "anchor": "4:39"
+    }
+  ]
+}

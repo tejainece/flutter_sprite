@@ -71,7 +71,7 @@ class Sprite {
               Point(portion.size.x - spriteAnchor.x, spriteAnchor.y);
         } else {
           spriteAnchor = spec.anchor - spriteAnchor;
-    }
+        }
         offset = offset + spriteAnchor;
       }
 

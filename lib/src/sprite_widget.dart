@@ -16,8 +16,10 @@ class SpriteWidget extends StatefulWidget {
 
   final SpriteWidgetReady? onReady;
 
+  final VoidCallback? onFinish;
+
   SpriteWidget(this.sprite,
-      {this.play = true, this.loop = true, this.onReady, Key? key})
+      {this.play = true, this.loop = true, this.onReady, this.onFinish, Key? key})
       : super(key: key);
 
   @override
@@ -118,6 +120,9 @@ class _SpriteWidgetState extends State<SpriteWidget> {
         _index = _index % widget.sprite.frames.length;
       });
       _timer = Timer(_getNextDuration(), _next);
+    }
+    if(_timer == null && widget.onFinish != null) {
+      widget.onFinish!();
     }
   }
 

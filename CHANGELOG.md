@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.4
+
++ Support anchoring from all four corners
+
 ## 3.0.3
 
 + `SpriteWidget.onFinish`

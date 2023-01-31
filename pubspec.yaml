@@ -1,6 +1,6 @@
 name: flutter_sprite
 description: Spritesheet support for Flutter
-version: 3.0.3
+version: 3.0.4
 homepage: https://github.com/tejainece/flutter_sprite
 
 environment:

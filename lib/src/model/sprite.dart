@@ -67,8 +67,8 @@ class Sprite {
       if (spriteSpec.anchor != null) {
         Point<num> spriteAnchor = spriteSpec.anchor!;
         if (flip) {
-          spriteAnchor = Point(spec.size.x - spec.anchor.x, spec.anchor.y) -
-              Point(portion.size.x - spriteAnchor.x, spriteAnchor.y);
+          spriteAnchor = Point(spec.size.x - (spec.anchor.x - spriteAnchor.x),
+              spec.anchor.y - spriteAnchor.y);
         } else {
           spriteAnchor = spec.anchor - spriteAnchor;
         }

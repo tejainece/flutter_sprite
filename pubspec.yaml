@@ -1,6 +1,6 @@
 name: flutter_sprite
 description: Spritesheet support for Flutter
-version: 3.0.4
+version: 3.0.5
 homepage: https://github.com/tejainece/flutter_sprite
 
 environment:
@@ -9,9 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  path: ^1.8.0
-  image: ^3.0.8
-  cupertino_icons: ^1.0.3
+  path: ^1.8.2
+  image: ^4.0.13
+  cupertino_icons: ^1.0.5
 
 dev_dependencies:
 

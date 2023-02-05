@@ -10,6 +10,8 @@ typedef SpriteWidgetReady = void Function(SpriteController controller);
 class SpriteWidget extends StatefulWidget {
   final Sprite sprite;
 
+  final double? scale;
+
   final bool play;
 
   final bool loop;
@@ -19,7 +21,12 @@ class SpriteWidget extends StatefulWidget {
   final VoidCallback? onFinish;
 
   SpriteWidget(this.sprite,
-      {this.play = true, this.loop = true, this.onReady, this.onFinish, Key? key})
+      {this.play = true,
+      this.scale,
+      this.loop = true,
+      this.onReady,
+      this.onFinish,
+      Key? key})
       : super(key: key);
 
   @override
@@ -34,6 +41,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   int _index = 0;
 
   bool loop = true;
+
+  double? get scale => widget.scale;
 
   @override
   void initState() {
@@ -53,31 +62,50 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   Widget build(BuildContext context) {
     final sheet = widget.sprite;
 
+    double width = sheet.size.x.toDouble();
+    double height = sheet.size.y.toDouble();
+
+    if (scale != null) {
+      width *= scale!;
+      height *= scale!;
+    }
+
     if (sheet.frames.isEmpty) {
       return Container(
-        width: sheet.size.x.toDouble(),
-        height: sheet.size.y.toDouble(),
+        width: width,
+        height: height,
       );
     }
 
     final sprite = sheet.frames[_index];
     Widget child = ClippedImage(image: sprite.image, portion: sprite.portion);
-    if(sprite.flip) {
+
+    Matrix4? transform;
+
+    if (scale != null) {
+      transform = Matrix4.identity().scaled(scale!, scale!, 1);
+    }
+
+    if (sprite.flip) {
       child = Transform(
-        alignment: Alignment.center,
-        transform: Matrix4.rotationY(pi),
+        transform: (transform ?? Matrix4.identity())..rotateY(pi),
+        child: child,
+      );
+    } else if (transform != null) {
+      child = Transform(
+        transform: transform,
         child: child,
       );
     }
 
     return Container(
-      width: sheet.size.x.toDouble(),
-      height: sheet.size.y.toDouble(),
+      width: width,
+      height: height,
       child: Stack(
         children: [
           Positioned(
-            left: sprite.translate.x.toDouble(),
-            top: sprite.translate.y.toDouble(),
+            left: sprite.translate.x.toDouble() * (scale ?? 1),
+            top: sprite.translate.y.toDouble() * (scale ?? 1),
             child: child,
           ),
         ],
@@ -121,7 +149,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       });
       _timer = Timer(_getNextDuration(), _next);
     }
-    if(_timer == null && widget.onFinish != null) {
+    if (_timer == null && widget.onFinish != null) {
       widget.onFinish!();
     }
   }

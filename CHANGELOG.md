@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.5
+
++ `SpriteWidget.scale` and `Anchored.scale`
+
 ## 3.0.4
 
 + Support anchoring from all four corners

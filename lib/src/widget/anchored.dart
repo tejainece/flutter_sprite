@@ -4,6 +4,8 @@ import 'package:flutter_sprite/src/model/sprite.dart';
 class Anchored extends StatelessWidget {
   final Size? size;
 
+  final double? scale;
+
   final Offset anchor;
 
   final Sprite sprite;
@@ -16,6 +18,7 @@ class Anchored extends StatelessWidget {
 
   const Anchored(this.sprite,
       {this.size,
+      this.scale,
       required this.anchor,
       required this.child,
       this.left = true,
@@ -28,10 +31,14 @@ class Anchored extends StatelessWidget {
     return Positioned(
       width: size?.width,
       height: size?.height,
-      left: left ? anchor.dx - sprite.anchor.x : null,
-      right: left ? null : anchor.dx - (sprite.size.x - sprite.anchor.x),
-      top: top ? anchor.dy - sprite.anchor.y : null,
-      bottom: top ? null : anchor.dy - (sprite.size.y - sprite.anchor.y),
+      left: left ? (anchor.dx - sprite.anchor.x * (scale ?? 1)) : null,
+      right: left
+          ? null
+          : (anchor.dx - (sprite.size.x - sprite.anchor.x) * (scale ?? 1)),
+      top: top ? (anchor.dy - sprite.anchor.y * (scale ?? 1)) : null,
+      bottom: top
+          ? null
+          : (anchor.dy - (sprite.size.y - sprite.anchor.y) * (scale ?? 1)),
       child: child,
     );
   }

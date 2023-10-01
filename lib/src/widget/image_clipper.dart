@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 
 class ClippedImage extends StatelessWidget {
   final ui.Image image;
-  final SpriteSheetPortion portion;
+  final ImagePortion portion;
 
   const ClippedImage({Key? key, required this.image, required this.portion})
       : super(key: key);
@@ -32,7 +32,7 @@ Future<ui.Image> loadImage(String path) async {
 class _RawPartImagePainter extends CustomPainter {
   final ui.Image image;
   // TODO final double scale;
-  SpriteSheetPortion portion;
+  ImagePortion portion;
 
   final painter = Paint();
 

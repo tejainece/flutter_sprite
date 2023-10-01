@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.0
+
+*Breaking changes*:
++ "sprites" property in JSON spec is renamed to "frames"
++ 
+
 ## 3.0.5
 
 + `SpriteWidget.scale` and `Anchored.scale`

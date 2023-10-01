@@ -3,7 +3,7 @@
   "anchor": "27:19",
   "size": "50:33",
   "flip": true,
-  "sprites": [
+  "frames": [
     {
       "uri": "../swords_man/00.png",
       "anchor": "27:19"

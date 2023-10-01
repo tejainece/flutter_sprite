@@ -1,7 +1,7 @@
 {
   "interval": 100,
   "size": "128:128",
-  "sprites": [
+  "frames": [
     {
       "uri": "sheet.png",
       "portion": {

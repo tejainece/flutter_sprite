@@ -77,8 +77,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       );
     }
 
-    final sprite = sheet.frames[_index];
-    Widget child = ClippedImage(image: sprite.image, portion: sprite.portion);
+    final frame = sheet.frames[_index];
+    Widget child = ClippedImage(image: frame.image, portion: frame.portion);
 
     Matrix4? transform;
 
@@ -86,7 +86,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       transform = Matrix4.identity().scaled(scale!, scale!, 1);
     }
 
-    if (sprite.flip) {
+    if (frame.flip) {
       child = Transform(
         transform: (transform ?? Matrix4.identity())..rotateY(pi),
         child: child,
@@ -104,8 +104,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       child: Stack(
         children: [
           Positioned(
-            left: sprite.translate.x.toDouble() * (scale ?? 1),
-            top: sprite.translate.y.toDouble() * (scale ?? 1),
+            left: frame.translate.x.toDouble() * (scale ?? 1),
+            top: frame.translate.y.toDouble() * (scale ?? 1),
             child: child,
           ),
         ],

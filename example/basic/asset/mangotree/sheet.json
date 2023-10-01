@@ -3,7 +3,7 @@
 	"interval": 100,
 	"size": "71:50",
 	"anchor": "35:32",
-	"sprites": [
+	"frames": [
 		{
 			"uri": "00.png",
 			"anchor": "35:32"

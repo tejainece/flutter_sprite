@@ -1,11 +1,11 @@
 import 'dart:math';
 
-class SpriteSheetPortion {
+class ImagePortion {
   final Point<num> offset;
 
   final Point<num> size;
 
-  SpriteSheetPortion(this.offset, this.size);
+  ImagePortion(this.offset, this.size);
 
   Map<String, dynamic> toJson() => {
         'offset': offset.toJson(),
@@ -13,13 +13,16 @@ class SpriteSheetPortion {
       };
 
   bool operator ==(other) {
-    if (other is SpriteSheetPortion) {
+    if (other is ImagePortion) {
       return offset == other.offset && size == other.size;
     }
     return false;
   }
 
-  static SpriteSheetPortion? fromJson(Map? m) {
+  @override
+  int get hashCode => Object.hash(offset.x, offset.y, size.x, size.y);
+
+  static ImagePortion? fromJson(Map? m) {
     if (m == null) {
       return null;
     }
@@ -34,85 +37,89 @@ class SpriteSheetPortion {
     } else if (m['size'] is! String) {
       throw Exception('invalid size');
     }
-    return SpriteSheetPortion(
+    return ImagePortion(
         _PointExt.fromJson(m['offset'])!, _PointExt.fromJson(m['size'])!);
   }
+
 }
 
-class SpriteSheetSprite {
+class SpriteFrameSpec {
   final String uri;
 
   final Point<num>? anchor;
 
-  final Point<num>? translate;
-
-  final SpriteSheetPortion? portion;
+  final ImagePortion? portion;
 
   final Duration? interval;
 
   final bool? flip;
 
-  SpriteSheetSprite(this.uri,
-      {this.anchor, this.translate, this.portion, this.interval, this.flip});
+  SpriteFrameSpec(this.uri,
+      {this.anchor, this.portion, this.interval, this.flip});
 
   Map<String, dynamic> toJson() {
     return {
       'uri': uri,
       if (anchor != null) 'anchor': anchor!.toJson(),
-      if (translate != null) 'translate': translate!.toJson(),
       if (portion != null) 'portion': portion!.toJson(),
       if (interval != null) 'interval': interval!.inMilliseconds,
       if (flip != null) 'flip': flip,
     };
   }
 
-  static SpriteSheetSprite? fromJson(Map? map) {
+  static SpriteFrameSpec? fromJson(Map? map) {
     if (map == null) {
       return null;
     }
-    return SpriteSheetSprite(
+    return SpriteFrameSpec(
       map['uri'],
       anchor: _PointExt.fromJson(map['anchor']),
-      translate: _PointExt.fromJson(map['translate']),
-      portion: SpriteSheetPortion.fromJson(map['portion']),
+      portion: ImagePortion.fromJson(map['portion']),
+      interval: map['interval'] != null
+          ? Duration(milliseconds: map['interval'])
+          : null,
       flip: map['flip'],
     );
   }
 }
 
-class SpriteSheetSpec {
+class SpriteSpec {
   final Duration interval;
 
   final Point<num> size;
 
   final Point<num> anchor;
 
-  final List<SpriteSheetSprite> sprites;
+  final List<SpriteFrameSpec> frames;
 
   final bool? flip;
 
-  SpriteSheetSpec(this.sprites, this.interval, this.size,
-      {Point<num>? anchor, this.flip})
+  SpriteSpec(
+      {required this.frames,
+      required this.interval,
+      required this.size,
+      Point<num>? anchor,
+      this.flip})
       : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() => {
         'interval': interval.inMilliseconds,
-        'sprites': sprites.map((e) => e.toJson()).toList(),
+        'frames': frames.map((e) => e.toJson()).toList(),
         'size': size.toJson(),
         if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
         if (flip != null) 'flip': flip,
       };
 
-  static SpriteSheetSpec? fromJson(Map? map) {
+  static SpriteSpec? fromJson(Map? map) {
     if (map == null) {
       return null;
     }
 
     // Validate sprites
-    if (map['sprites'] == null) {
-      throw Exception('sprites is mandatory');
-    } else if (map['sprites'] is! List) {
-      throw Exception('sprites should be a list');
+    if (map['frames'] == null) {
+      throw Exception('frames is mandatory');
+    } else if (map['frames'] is! List) {
+      throw Exception('frames should be a list');
     }
 
     // Validate interval
@@ -130,15 +137,16 @@ class SpriteSheetSpec {
 
     final anchor = _PointExt.fromJson(map['anchor']);
 
-    return SpriteSheetSpec(
-        (map['sprites'] as List)
-            .cast<Map>()
-            .map((e) => SpriteSheetSprite.fromJson(e)!)
-            .toList(),
-        Duration(milliseconds: map['interval']),
-        _PointExt.fromJson(map['size'])!,
-        anchor: anchor,
-        flip: map['flip']);
+    return SpriteSpec(
+      interval: Duration(milliseconds: map['interval']),
+      size: _PointExt.fromJson(map['size'])!,
+      anchor: anchor,
+      flip: map['flip'],
+      frames: (map['frames'] as List)
+          .cast<Map>()
+          .map((e) => SpriteFrameSpec.fromJson(e)!)
+          .toList(),
+    );
   }
 }
 

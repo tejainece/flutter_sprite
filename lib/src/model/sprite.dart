@@ -25,6 +25,8 @@ class SpriteFrame {
       this.flip = false})
       : portion = portion ??
             ImagePortion(Point(0, 0), Point(image.width, image.height));
+
+  Rectangle<num> get rectangle => portion.rectangle;
 }
 
 class Sprite {

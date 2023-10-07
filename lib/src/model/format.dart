@@ -19,6 +19,8 @@ class ImagePortion {
     return false;
   }
 
+  Rectangle<num> get rectangle => Rectangle<num>.fromPoints(offset, size);
+
   @override
   int get hashCode => Object.hash(offset.x, offset.y, size.x, size.y);
 

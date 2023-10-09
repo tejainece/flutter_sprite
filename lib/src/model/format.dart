@@ -42,7 +42,6 @@ class ImagePortion {
     return ImagePortion(
         _PointExt.fromJson(m['offset'])!, _PointExt.fromJson(m['size'])!);
   }
-
 }
 
 class SpriteFrameSpec {
@@ -96,12 +95,15 @@ class SpriteSpec {
 
   final bool? flip;
 
+  final int? refScale;
+
   SpriteSpec(
       {required this.frames,
       required this.interval,
       required this.size,
       Point<num>? anchor,
-      this.flip})
+      this.flip,
+      this.refScale})
       : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() => {
@@ -110,6 +112,7 @@ class SpriteSpec {
         'size': size.toJson(),
         if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
         if (flip != null) 'flip': flip,
+        if (refScale != null) 'refScale': refScale,
       };
 
   static SpriteSpec? fromJson(Map? map) {
@@ -144,6 +147,7 @@ class SpriteSpec {
       size: _PointExt.fromJson(map['size'])!,
       anchor: anchor,
       flip: map['flip'],
+      refScale: map['refScale'],
       frames: (map['frames'] as List)
           .cast<Map>()
           .map((e) => SpriteFrameSpec.fromJson(e)!)

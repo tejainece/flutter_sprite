@@ -38,7 +38,14 @@ class Sprite {
 
   final List<SpriteFrame> frames;
 
-  Sprite(this.interval, this.frames, this.size, this.anchor);
+  final int? refScale;
+
+  Sprite(
+      {required this.interval,
+      required this.frames,
+      required this.size,
+      required this.anchor,
+      this.refScale});
 
   static Future<Sprite> load(String specPath) async {
     final jsonStr = await rootBundle.loadString(specPath, cache: false);
@@ -84,6 +91,11 @@ class Sprite {
           flip: flip));
     }
 
-    return Sprite(spec.interval, frames, spec.size, spec.anchor);
+    return Sprite(
+        interval: spec.interval,
+        frames: frames,
+        size: spec.size,
+        anchor: spec.anchor,
+        refScale: spec.refScale);
   }
 }

@@ -12,14 +12,14 @@ class SpriteFrame {
 
   final ImagePortion portion;
 
-  final Point<num> translate;
+  final Point<num> anchor;
 
   final Duration? interval;
 
   final bool flip;
 
   SpriteFrame(this.image,
-      {this.translate = const Point<num>(0, 0),
+      {this.anchor = const Point<num>(0, 0),
       this.interval,
       ImagePortion? portion,
       this.flip = false})
@@ -72,20 +72,17 @@ class Sprite {
           ImagePortion(Point(0, 0), Point(image.width, image.height));
       bool flip = frameSpec.flip ?? spec.flip ?? false;
 
-      Point<num> translate = Point<num>(0, 0);
-      if (frameSpec.anchor != null) {
-        Point<num> spriteAnchor = frameSpec.anchor!;
+
+        Point<num> frameAnchor = frameSpec.anchor ?? Point(0, 0);
         if (flip) {
-          spriteAnchor = Point(spec.size.x - (spec.anchor.x - spriteAnchor.x),
-              spec.anchor.y - spriteAnchor.y);
+          frameAnchor = Point(spec.size.x - (spec.anchor.x - frameAnchor.x),
+              spec.anchor.y - frameAnchor.y);
         } else {
-          spriteAnchor = spec.anchor - spriteAnchor;
+          frameAnchor = spec.anchor - frameAnchor;
         }
-        translate = translate + spriteAnchor;
-      }
 
       frames.add(SpriteFrame(image,
-          translate: translate,
+          anchor: frameAnchor,
           interval: frameSpec.interval,
           portion: portion,
           flip: flip));

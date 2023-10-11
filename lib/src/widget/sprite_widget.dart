@@ -104,8 +104,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       child: Stack(
         children: [
           Positioned(
-            left: frame.translate.x.toDouble() * (scale ?? 1),
-            top: frame.translate.y.toDouble() * (scale ?? 1),
+            left: frame.anchor.x.toDouble() * (scale ?? 1),
+            top: frame.anchor.y.toDouble() * (scale ?? 1),
             child: child,
           ),
         ],

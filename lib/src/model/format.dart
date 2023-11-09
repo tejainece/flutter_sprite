@@ -53,18 +53,15 @@ class SpriteFrameSpec {
 
   final Duration? interval;
 
-  final bool? flip;
-
   SpriteFrameSpec(this.uri,
-      {this.anchor, this.portion, this.interval, this.flip});
+      {required this.anchor, this.portion, this.interval});
 
   Map<String, dynamic> toJson() {
     return {
       'uri': uri,
-      if (anchor != null) 'anchor': anchor!.toJson(),
+      if(anchor != null) 'anchor': anchor!.toJson(),
       if (portion != null) 'portion': portion!.toJson(),
       if (interval != null) 'interval': interval!.inMilliseconds,
-      if (flip != null) 'flip': flip,
     };
   }
 
@@ -79,7 +76,6 @@ class SpriteFrameSpec {
       interval: map['interval'] != null
           ? Duration(milliseconds: map['interval'])
           : null,
-      flip: map['flip'],
     );
   }
 }
@@ -93,7 +89,7 @@ class SpriteSpec {
 
   final List<SpriteFrameSpec> frames;
 
-  final bool? flip;
+  final bool flip;
 
   final int? refScale;
 
@@ -102,7 +98,7 @@ class SpriteSpec {
       required this.interval,
       required this.size,
       Point<num>? anchor,
-      this.flip,
+      required this.flip,
       this.refScale})
       : anchor = anchor ?? Point<num>(0, 0);
 
@@ -111,7 +107,7 @@ class SpriteSpec {
         'frames': frames.map((e) => e.toJson()).toList(),
         'size': size.toJson(),
         if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
-        if (flip != null) 'flip': flip,
+        if (flip) 'flip': flip,
         if (refScale != null) 'refScale': refScale,
       };
 
@@ -146,7 +142,7 @@ class SpriteSpec {
       interval: Duration(milliseconds: map['interval']),
       size: _PointExt.fromJson(map['size'])!,
       anchor: anchor,
-      flip: map['flip'],
+      flip: map['flip'] ?? false,
       refScale: map['refScale'],
       frames: (map['frames'] as List)
           .cast<Map>()

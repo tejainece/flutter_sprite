@@ -86,7 +86,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       transform = Matrix4.identity().scaled(scale!, scale!, 1);
     }
 
-    if (frame.flip) {
+    if (sheet.flip) {
       child = Transform(
         transform: (transform ?? Matrix4.identity())..rotateY(pi),
         child: child,
@@ -104,8 +104,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
       child: Stack(
         children: [
           Positioned(
-            left: frame.anchor.x.toDouble() * (scale ?? 1),
-            top: frame.anchor.y.toDouble() * (scale ?? 1),
+            /* TODO left: frame.anchor.x.toDouble() * (scale ?? 1),
+            top: frame.anchor.y.toDouble() * (scale ?? 1),*/
             child: child,
           ),
         ],

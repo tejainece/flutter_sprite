@@ -74,7 +74,6 @@ class Sprite {
       final portion = frameSpec.portion ??
           ImagePortion(Point(0, 0), Point(image.width, image.height));
 
-      // Point<num> frameAnchor = spec.anchor - (spec.anchor - frameSpec.anchor);
       Point<num> translate = Point<num>(0, 0);
       if (frameSpec.anchor != null) {
         translate = spec.anchor - frameSpec.anchor!;

@@ -12,12 +12,15 @@ class SpriteFrame {
 
   final ImagePortion portion;
 
+  final Point<num> anchor;
+
   final Point<num> translate;
 
   final Duration? interval;
 
   SpriteFrame(
     this.image, {
+    required this.anchor,
     required this.translate,
     this.interval,
     ImagePortion? portion,
@@ -76,14 +79,12 @@ class Sprite {
 
       Point<num> translate = Point<num>(0, 0);
       if (frameSpec.anchor != null) {
-        translate = spec.anchor - frameSpec.anchor!;
-        if (spec.flip) {
-          translate = Point(-translate.x, translate.y);
-        }
+        translate = anchor - frameSpec.anchor!;
       }
 
       frames.add(SpriteFrame(image,
           translate: translate,
+          anchor: frameSpec.anchor ?? spec.anchor,
           interval: frameSpec.interval,
           portion: portion));
     }

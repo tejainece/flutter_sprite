@@ -43,15 +43,24 @@ class Sprite {
 
   final bool flip;
 
+  final Map<String, dynamic> data;
+
   Sprite(
       {required this.interval,
       required this.frames,
       required this.size,
       required this.anchor,
       this.refScale,
-      this.flip = false});
+      this.flip = false,
+      required this.data});
 
-  static Future<Sprite> load(String specPath) async {
+  late final Duration duration = frames.fold(Duration(), (p, e) => p + (e.interval ?? interval));
+
+  // TODO load from directory
+
+  // TODO load from http
+
+  static Future<Sprite> loadFromAsset(String specPath) async {
     final jsonStr = await rootBundle.loadString(specPath, cache: false);
     final json = jsonDecode(jsonStr);
     final spec = SpriteSpec.fromJson(json)!;
@@ -90,11 +99,13 @@ class Sprite {
     }
 
     return Sprite(
-        interval: spec.interval,
-        frames: frames,
-        size: spec.size,
-        anchor: anchor,
-        refScale: spec.refScale,
-        flip: spec.flip);
+      interval: spec.interval,
+      frames: frames,
+      size: spec.size,
+      anchor: anchor,
+      refScale: spec.refScale,
+      flip: spec.flip,
+      data: spec.data,
+    );
   }
 }

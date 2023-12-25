@@ -6,31 +6,31 @@ import 'package:flutter_sprite/flutter_sprite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final sprite1 = await Sprite.load('asset/swords_man/sprite.json');
-  final mirror = await Sprite.load('asset/mirrored/sprite.json');
-  final sprite2 = await Sprite.load('asset/spritesheet/sheet.json');
-  final mangoTree = await Sprite.load('asset/mangotree/sheet.json');
-  final turkey = await Sprite.load('asset/turkey/sheet.json');
+  final sprite1 = await Sprite.loadFromAsset('asset/swords_man/sprite.json');
+  final mirror = await Sprite.loadFromAsset('asset/mirrored/sprite.json');
+  final sprite2 = await Sprite.loadFromAsset('asset/spritesheet/sheet.json');
+  final mangoTree = await Sprite.loadFromAsset('asset/mangotree/sheet.json');
+  final turkey = await Sprite.loadFromAsset('asset/turkey/sheet.json');
 
   runApp(
     Directionality(
       textDirection: TextDirection.ltr,
       child: Wrap(
         children: [
-          Container(child: SpriteWidget(sprite2), color: Colors.blue),
-          Container(child: SpriteWidget(mirror), color: Colors.blue),
-          Container(child: SpriteWidget(sprite1), color: Colors.blue),
+          Container(color: Colors.blue, child: SpriteWidget(sprite2)),
+          Container(color: Colors.blue, child: SpriteWidget(mirror)),
+          Container(color: Colors.blue, child: SpriteWidget(sprite1)),
           SpriteWidget(sprite2, onReady: (controller) {
-            Timer(Duration(seconds: 10), () {
+            Timer(const Duration(seconds: 10), () {
               controller.pause();
 
-              Timer(Duration(seconds: 10), () {
+              Timer(const Duration(seconds: 10), () {
                 controller.play();
               });
             });
           }),
-          Container(child: SpriteWidget(mangoTree), color: Colors.blue),
-          Container(child: SpriteWidget(turkey), color: Colors.blue),
+          Container(color: Colors.blue, child: SpriteWidget(mangoTree)),
+          Container(color: Colors.blue, child: SpriteWidget(turkey)),
           Container(
               child: SpriteWidget(
                 turkey,

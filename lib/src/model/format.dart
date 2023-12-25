@@ -59,7 +59,7 @@ class SpriteFrameSpec {
   Map<String, dynamic> toJson() {
     return {
       'uri': uri,
-      if(anchor != null) 'anchor': anchor!.toJson(),
+      if (anchor != null) 'anchor': anchor!.toJson(),
       if (portion != null) 'portion': portion!.toJson(),
       if (interval != null) 'interval': interval!.inMilliseconds,
     };
@@ -93,13 +93,16 @@ class SpriteSpec {
 
   final int? refScale;
 
+  final Map<String, dynamic> data;
+
   SpriteSpec(
       {required this.frames,
       required this.interval,
       required this.size,
       Point<num>? anchor,
       required this.flip,
-      this.refScale})
+      this.refScale,
+      required this.data})
       : anchor = anchor ?? Point<num>(0, 0);
 
   Map<String, dynamic> toJson() => {
@@ -109,6 +112,7 @@ class SpriteSpec {
         if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
         if (flip) 'flip': flip,
         if (refScale != null) 'refScale': refScale,
+        if (data.isNotEmpty) 'data': data,
       };
 
   static SpriteSpec? fromJson(Map? map) {
@@ -144,6 +148,7 @@ class SpriteSpec {
       anchor: anchor,
       flip: map['flip'] ?? false,
       refScale: map['refScale'],
+      data: map['data'] ?? {},
       frames: (map['frames'] as List)
           .cast<Map>()
           .map((e) => SpriteFrameSpec.fromJson(e)!)

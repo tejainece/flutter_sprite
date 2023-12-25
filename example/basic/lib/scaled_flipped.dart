@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_sprite/flutter_sprite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final sprite2 = await Sprite.load('asset/mirrored/sprite.json');
+  final sprite2 = await Sprite.loadFromAsset('asset/mirrored/sprite.json');
 
   runApp(
     Directionality(

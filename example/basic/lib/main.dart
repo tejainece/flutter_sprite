@@ -32,14 +32,14 @@ void main() async {
           Container(color: Colors.blue, child: SpriteWidget(mangoTree)),
           Container(color: Colors.blue, child: SpriteWidget(turkey)),
           Container(
+              color: Colors.blue,
               child: SpriteWidget(
                 turkey,
                 loop: false,
                 onFinish: () {
-                  print('finished!');
+                  debugPrint('finished!');
                 },
-              ),
-              color: Colors.blue),
+              )),
         ],
       ),
     ),

@@ -11,13 +11,15 @@ void main() async {
       textDirection: TextDirection.ltr,
       child: Wrap(
         children: [
-          Container(child: SpriteWidget(sprite2), color: Colors.blue),
-          SizedBox.fromSize(size: Size(10, 10)),
+          Container(color: Colors.blue, child: SpriteWidget(sprite2)),
+          SizedBox.fromSize(size: const Size(10, 10)),
           Container(
-              child: SpriteWidget(sprite2, scale: 2.0), color: Colors.blue),
-          SizedBox.fromSize(size: Size(10, 10)),
+              color: Colors.blue,
+              child: SpriteWidget(sprite2, scale: 2.0)),
+          SizedBox.fromSize(size: const Size(10, 10)),
           Container(
-              child: SpriteWidget(sprite2, scale: 0.5), color: Colors.blue),
+              color: Colors.blue,
+              child: SpriteWidget(sprite2, scale: 0.5)),
         ],
       ),
     ),

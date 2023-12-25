@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:ui';
+import 'package:flutter_sprite/flutter_sprite.dart';
 
 class ImagePortion {
   final Point<num> offset;
@@ -40,14 +42,14 @@ class ImagePortion {
       throw Exception('invalid size');
     }
     return ImagePortion(
-        _PointExt.fromJson(m['offset'])!, _PointExt.fromJson(m['size'])!);
+        PointExt.fromJson(m['offset'])!, PointExt.fromJson(m['size'])!);
   }
 }
 
 class SpriteFrameSpec {
   final String uri;
 
-  final Point<num>? anchor;
+  final Offset? anchor;
 
   final ImagePortion? portion;
 
@@ -71,7 +73,7 @@ class SpriteFrameSpec {
     }
     return SpriteFrameSpec(
       map['uri'],
-      anchor: _PointExt.fromJson(map['anchor']),
+      anchor: OffsetExt.fromJson(map['anchor']),
       portion: ImagePortion.fromJson(map['portion']),
       interval: map['interval'] != null
           ? Duration(milliseconds: map['interval'])
@@ -83,9 +85,9 @@ class SpriteFrameSpec {
 class SpriteSpec {
   final Duration interval;
 
-  final Point<num> size;
+  final Size size;
 
-  final Point<num> anchor;
+  final Offset anchor;
 
   final List<SpriteFrameSpec> frames;
 
@@ -99,11 +101,11 @@ class SpriteSpec {
       {required this.frames,
       required this.interval,
       required this.size,
-      Point<num>? anchor,
+      Offset? anchor,
       required this.flip,
       this.refScale,
       required this.data})
-      : anchor = anchor ?? Point<num>(0, 0);
+      : anchor = anchor ?? Offset(0, 0);
 
   Map<String, dynamic> toJson() => {
         'interval': interval.inMilliseconds,
@@ -140,11 +142,11 @@ class SpriteSpec {
       throw Exception('missing or invalid size property on sprite sheet');
     }
 
-    final anchor = _PointExt.fromJson(map['anchor']);
+    final anchor = OffsetExt.fromJson(map['anchor']);
 
     return SpriteSpec(
       interval: Duration(milliseconds: map['interval']),
-      size: _PointExt.fromJson(map['size'])!,
+      size: SizeExt.fromJson(map['size'])!,
       anchor: anchor,
       flip: map['flip'] ?? false,
       refScale: map['refScale'],
@@ -154,24 +156,5 @@ class SpriteSpec {
           .map((e) => SpriteFrameSpec.fromJson(e)!)
           .toList(),
     );
-  }
-}
-
-extension _PointExt on Point<num> {
-  String toJson() => '$x:$y';
-
-  static Point<num>? fromJson(String? str) {
-    if (str == null) {
-      return null;
-    }
-
-    final parts = str.split(':').map(num.tryParse).toList();
-    if (parts.length != 2) {
-      throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
-    } else if (parts.any((element) => element == null)) {
-      throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
-    }
-
-    return Point<num>(parts[0]!, parts[1]!);
   }
 }

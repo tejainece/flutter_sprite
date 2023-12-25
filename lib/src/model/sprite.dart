@@ -1,20 +1,18 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:ui' as ui;
-
-import 'package:flutter_sprite/src/model/format.dart';
-import 'package:flutter_sprite/src/widget/image_clipper.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/services.dart';
+import 'package:flutter_sprite/flutter_sprite.dart';
 
 class SpriteFrame {
   final ui.Image image;
 
   final ImagePortion portion;
 
-  final Point<num> anchor;
+  final Offset anchor;
 
-  final Point<num> translate;
+  final Offset translate;
 
   final Duration? interval;
 
@@ -28,14 +26,30 @@ class SpriteFrame {
             ImagePortion(Point(0, 0), Point(image.width, image.height));
 
   Rectangle<num> get rectangle => portion.rectangle;
+
+  Offset calcOffset(Sprite sprite, Offset offset, Offset worldAnchor,
+      double scale, Size size) {
+    if (sprite.flip) {
+      worldAnchor = Offset(size.width - worldAnchor.dx, worldAnchor.dy);
+    }
+
+    Offset o = offset + worldAnchor - sprite.anchor * scale + translate * scale;
+    return o;
+  }
+
+  ui.Rect calcRect(Sprite sprite, Offset offset, Offset worldAnchor,
+      double scale, Size size) {
+    return calcOffset(sprite, offset, worldAnchor, scale, size) &
+        portion.size.s * scale;
+  }
 }
 
 class Sprite {
   final Duration interval;
 
-  final Point<num> size;
+  final Size size;
 
-  final Point<num> anchor;
+  final Offset anchor;
 
   final List<SpriteFrame> frames;
 
@@ -54,7 +68,20 @@ class Sprite {
       this.flip = false,
       required this.data});
 
-  late final Duration duration = frames.fold(Duration(), (p, e) => p + (e.interval ?? interval));
+  late final Duration duration =
+      frames.fold(Duration(), (p, e) => p + (e.interval ?? interval));
+
+  Offset calcPoint(Offset offset, Offset worldAnchor, double scale, Size size,
+      Offset point) {
+    // point = anchor - point;
+    if (flip) {
+      worldAnchor = Offset(size.width - worldAnchor.dx, worldAnchor.dy);
+      point = this.size.o - point;
+    }
+
+    Offset o = offset + worldAnchor - anchor * scale + point * scale;
+    return o;
+  }
 
   // TODO load from directory
 
@@ -68,9 +95,9 @@ class Sprite {
     final frames = <SpriteFrame>[];
     final cache = <String, ui.Image>{};
 
-    Point<num> anchor = spec.anchor;
+    Offset anchor = spec.anchor;
     if (spec.flip) {
-      anchor = Point(spec.size.x - spec.anchor.x, spec.anchor.y);
+      anchor = Offset(spec.size.width - spec.anchor.dx, spec.anchor.dy);
     }
 
     for (final frameSpec in spec.frames) {
@@ -86,7 +113,7 @@ class Sprite {
       final portion = frameSpec.portion ??
           ImagePortion(Point(0, 0), Point(image.width, image.height));
 
-      Point<num> translate = Point<num>(0, 0);
+      Offset translate = Offset(0, 0);
       if (frameSpec.anchor != null) {
         translate = anchor - frameSpec.anchor!;
       }

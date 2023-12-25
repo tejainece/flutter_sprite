@@ -31,14 +31,15 @@ class Anchored extends StatelessWidget {
     return Positioned(
       width: size?.width,
       height: size?.height,
-      left: left ? (anchor.dx - sprite.anchor.x * (scale ?? 1)) : null,
+      left: left ? (anchor.dx - sprite.anchor.dx * (scale ?? 1)) : null,
       right: left
           ? null
-          : (anchor.dx - (sprite.size.x - sprite.anchor.x) * (scale ?? 1)),
-      top: top ? (anchor.dy - sprite.anchor.y * (scale ?? 1)) : null,
+          : (anchor.dx - (sprite.size.width - sprite.anchor.dx) * (scale ?? 1)),
+      top: top ? (anchor.dy - sprite.anchor.dy * (scale ?? 1)) : null,
       bottom: top
           ? null
-          : (anchor.dy - (sprite.size.y - sprite.anchor.y) * (scale ?? 1)),
+          : (anchor.dy -
+              (sprite.size.height - sprite.anchor.dy) * (scale ?? 1)),
       child: child,
     );
   }

@@ -62,8 +62,8 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   Widget build(BuildContext context) {
     final sheet = widget.sprite;
 
-    double width = sheet.size.x.toDouble();
-    double height = sheet.size.y.toDouble();
+    double width = sheet.size.width.toDouble();
+    double height = sheet.size.height.toDouble();
 
     if (scale != null) {
       width *= scale!;

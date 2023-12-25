@@ -14,12 +14,10 @@ void main() async {
           Container(color: Colors.blue, child: SpriteWidget(sprite2, scale: 1)),
           SizedBox.fromSize(size: const Size(10, 10)),
           Container(
-              color: Colors.blue,
-              child: SpriteWidget(sprite2, scale: 2.0)),
+              color: Colors.blue, child: SpriteWidget(sprite2, scale: 2.0)),
           SizedBox.fromSize(size: const Size(10, 10)),
           Container(
-              color: Colors.blue,
-              child: SpriteWidget(sprite2, scale: 0.5)),
+              color: Colors.blue, child: SpriteWidget(sprite2, scale: 0.5)),
         ],
       ),
     ),

@@ -10,7 +10,7 @@ typedef SpriteWidgetReady = void Function(SpriteController controller);
 class SpriteWidget extends StatefulWidget {
   final Sprite sprite;
 
-  final double? scale;
+  final double scale;
 
   final bool play;
 
@@ -20,12 +20,15 @@ class SpriteWidget extends StatefulWidget {
 
   final VoidCallback? onFinish;
 
+  final bool syncAnimationOnSpriteChange;
+
   SpriteWidget(this.sprite,
       {this.play = true,
-      this.scale,
+      this.scale = 1,
       this.loop = true,
       this.onReady,
       this.onFinish,
+      this.syncAnimationOnSpriteChange = true,
       Key? key})
       : super(key: key);
 
@@ -42,7 +45,9 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 
   bool loop = true;
 
-  double? get scale => widget.scale;
+  double get scale => widget.scale;
+
+  Sprite get sprite => widget.sprite;
 
   @override
   void initState() {
@@ -50,6 +55,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 
     spriteController = SpriteController(this);
     widget.onReady?.call(spriteController);
+    spriteController._sizeChangeController.add(Size(width, height));
 
     loop = widget.loop;
 
@@ -59,34 +65,49 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final sheet = widget.sprite;
+  void didUpdateWidget(SpriteWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    double width = sheet.size.width.toDouble();
-    double height = sheet.size.height.toDouble();
-
-    if (scale != null) {
-      width *= scale!;
-      height *= scale!;
+    bool sizeChanged =
+        widget.scale != oldWidget.scale || widget.sprite != oldWidget.sprite;
+    if (widget.sprite != sprite) {
+      if (!widget.syncAnimationOnSpriteChange ||
+          _index >= sprite.frames.length) {
+        _index = 0;
+      }
     }
 
-    if (sheet.frames.isEmpty) {
+    if (sizeChanged) {
+      spriteController._sizeChangeController.add(Size(width, height));
+    }
+  }
+
+  double get width => sprite.size.width.toDouble() * scale;
+
+  double get height => sprite.size.height.toDouble() * scale;
+
+  @override
+  Widget build(BuildContext context) {
+    double width = this.width;
+    double height = this.height;
+
+    if (sprite.frames.isEmpty) {
       return Container(
         width: width,
         height: height,
       );
     }
 
-    final frame = sheet.frames[_index];
+    final frame = sprite.frames[_index];
     Widget child = ClippedImage(image: frame.image, portion: frame.portion);
 
     Matrix4? transform;
 
-    if (scale != null) {
-      transform = Matrix4.identity().scaled(scale!, scale!, 1);
+    if (scale != 1) {
+      transform = Matrix4.identity().scaled(scale, scale, 1);
     }
 
-    if (sheet.flip) {
+    if (sprite.flip) {
       child = Transform(
         transform: (transform ?? Matrix4.identity())..rotateY(pi),
         child: child,
@@ -169,6 +190,7 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   @override
   void dispose() {
     _pause();
+    spriteController.dispose();
     super.dispose();
   }
 }
@@ -176,7 +198,13 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 class SpriteController {
   final _SpriteWidgetState _state;
 
+  final _sizeChangeController = StreamController<Size>.broadcast();
+
   SpriteController(this._state);
+
+  Stream<Size> get onSizeChange => _sizeChangeController.stream;
+
+  Sprite get sprite => _state.sprite;
 
   void play() => _state.play();
 
@@ -185,4 +213,10 @@ class SpriteController {
   bool get loop => _state.loop;
 
   set loop(bool value) => _state.loop = value;
+
+  Size get size => Size(_state.width, _state.height);
+
+  void dispose() {
+    _sizeChangeController.close();
+  }
 }

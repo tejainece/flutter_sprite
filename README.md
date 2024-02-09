@@ -46,5 +46,6 @@ Widget build(BuildContext context) async {
 
 ## TODO
 
++ [ ] Layered sprite
 + [ ] Play from specific point
 + [ ] Animation controls to debug animations

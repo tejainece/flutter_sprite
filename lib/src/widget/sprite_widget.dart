@@ -10,7 +10,9 @@ typedef SpriteWidgetReady = void Function(SpriteController controller);
 class SpriteWidget extends StatefulWidget {
   final Sprite sprite;
 
-  final double scale;
+  final double? scale;
+
+  final double? width;
 
   final bool play;
 
@@ -24,7 +26,8 @@ class SpriteWidget extends StatefulWidget {
 
   SpriteWidget(this.sprite,
       {this.play = true,
-      this.scale = 1,
+      this.scale,
+      this.width,
       this.loop = true,
       this.onReady,
       this.onFinish,
@@ -45,7 +48,11 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 
   bool loop = true;
 
-  double get scale => widget.scale;
+  double get scale {
+    if (widget.scale != null) return widget.scale!;
+    if (widget.width != null) return widget.width! / sprite.size.width;
+    return 1;
+  }
 
   Sprite get sprite => widget.sprite;
 
@@ -68,8 +75,9 @@ class _SpriteWidgetState extends State<SpriteWidget> {
   void didUpdateWidget(SpriteWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    bool sizeChanged =
-        widget.scale != oldWidget.scale || widget.sprite != oldWidget.sprite;
+    bool sizeChanged = widget.scale != oldWidget.scale ||
+        widget.sprite != oldWidget.sprite ||
+        widget.width != oldWidget.width;
     if (widget.sprite != sprite) {
       if (!widget.syncAnimationOnSpriteChange ||
           _index >= sprite.frames.length) {
@@ -92,46 +100,37 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     double height = this.height;
 
     if (sprite.frames.isEmpty) {
-      return Container(
+      return SizedBox(
         width: width,
         height: height,
       );
     }
 
     final frame = sprite.frames[_index];
-    Widget child = ClippedImage(image: frame.image, portion: frame.portion);
-
-    Matrix4? transform;
-
-    if (scale != 1) {
-      transform = Matrix4.identity().scaled(scale, scale, 1);
-    }
+    Widget child = ClippedImage(
+        image: frame.image, portion: frame.portion, size: Size(width, height));
 
     if (sprite.flip) {
       child = Transform(
-        transform: (transform ?? Matrix4.identity())..rotateY(pi),
-        child: child,
-      );
-    } else if (transform != null) {
-      child = Transform(
-        transform: transform,
+        transform: Matrix4.identity()..rotateY(pi),
         child: child,
       );
     }
 
-    return Container(
-      width: width,
-      height: height,
-      child: Stack(
-        children: [
-          Positioned(
-            /* TODO left: frame.anchor.x.toDouble() * (scale ?? 1),
+    return SizedBox(
+        width: width,
+        height: height,
+        child: Stack(
+          children: [
+            Positioned(
+              /* TODO left: frame.anchor.x.toDouble() * (scale ?? 1),
             top: frame.anchor.y.toDouble() * (scale ?? 1),*/
-            child: child,
-          ),
-        ],
-      ),
-    );
+              child: child,
+            ),
+            SizedBox(width: width, height: height),
+          ],
+        ),
+      );
   }
 
   Duration _getNextDuration() {

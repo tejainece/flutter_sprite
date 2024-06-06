@@ -1,19 +1,25 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_sprite/src/model/format.dart';
 import 'dart:ui' as ui;
 
 class ClippedImage extends StatelessWidget {
   final ui.Image image;
   final ImagePortion portion;
+  final Size size;
 
-  const ClippedImage({Key? key, required this.image, required this.portion})
+  const ClippedImage(
+      {Key? key,
+      required this.image,
+      required this.portion,
+      required this.size})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // final size = Size(portion.size.x.toDouble(), portion.size.y.toDouble());
     return CustomPaint(
-      size: Size(portion.size.x.toDouble(), portion.size.y.toDouble()),
+      size: size,
       painter: _RawPartImagePainter(
         image: image,
         portion: portion,
@@ -31,7 +37,7 @@ Future<ui.Image> loadImage(String path) async {
 
 class _RawPartImagePainter extends CustomPainter {
   final ui.Image image;
-  // TODO final double scale;
+
   ImagePortion portion;
 
   final painter = Paint();
@@ -40,7 +46,7 @@ class _RawPartImagePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final src =
+    Rect src =
         Offset(portion.offset.x.toDouble(), portion.offset.y.toDouble()) &
             Size(portion.size.x.toDouble(), portion.size.y.toDouble());
     final dst = Offset.zero & size;

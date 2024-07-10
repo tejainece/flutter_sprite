@@ -101,7 +101,7 @@ class Sprite {
     }
 
     for (final frameSpec in spec.frames) {
-      final path = p.join(dir, frameSpec.uri);
+      final path = dir + '/' + frameSpec.uri;
 
       ui.Image image;
       if (!cache.containsKey(path)) {

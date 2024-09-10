@@ -84,12 +84,8 @@ class Sprite {
     return o;
   }
 
-  // TODO load from directory
-
-  // TODO load from http
-
-  static Future<Sprite> loadFromAsset(String specPath,
-      {SpriteLoader loader = const AssetSpriteLoader()}) async {
+  static Future<Sprite> load(String specPath, {SpriteLoader? loader}) async {
+    loader ??= AssetSpriteLoader();
     final jsonStr = await loader.loadString(specPath);
     final json = jsonDecode(jsonStr);
     final spec = SpriteSpec.fromJson(json)!;
@@ -139,24 +135,13 @@ class Sprite {
   }
 }
 
-abstract class SpriteLoader {
+mixin SpriteLoader {
   Future<List<int>> loadBytes(String path);
 
   Future<String> loadString(String path,
-      {Converter<List<int>, String> decoder = const Utf8Decoder()});
-
-  Future<ui.Image> loadImage(String path);
-}
-
-class AssetSpriteLoader implements SpriteLoader {
-  const AssetSpriteLoader();
-
-  Future<List<int>> loadBytes(String path) async =>
-      (await rootBundle.load(path)).buffer.asUint8List();
-
-  Future<String> loadString(String path,
-      {Converter<List<int>, String> decoder = const Utf8Decoder()}) async {
-    return decoder.convert(await loadBytes(path));
+      {Encoding decoder = utf8}) async {
+    final bytes = await loadBytes(path);
+    return utf8.decoder.convert(bytes);
   }
 
   Future<ui.Image> loadImage(String path) async {
@@ -164,4 +149,14 @@ class AssetSpriteLoader implements SpriteLoader {
         .instantiateImageCodec(Uint8List.fromList(await loadBytes(path)));
     return (await codec.getNextFrame()).image;
   }
+
+  Future<Sprite> loadSprite(String specPath) async =>
+      await Sprite.load(specPath, loader: this);
+}
+
+class AssetSpriteLoader with SpriteLoader {
+  const AssetSpriteLoader();
+
+  Future<List<int>> loadBytes(String path) async =>
+      (await rootBundle.load(path)).buffer.asUint8List();
 }

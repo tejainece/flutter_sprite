@@ -6,11 +6,11 @@ import 'package:flutter_sprite/flutter_sprite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final sprite1 = await Sprite.loadFromAsset('asset/swords_man/sprite.json');
-  final mirror = await Sprite.loadFromAsset('asset/mirrored/sprite.json');
-  final sprite2 = await Sprite.loadFromAsset('asset/spritesheet/sheet.json');
-  final mangoTree = await Sprite.loadFromAsset('asset/mangotree/sheet.json');
-  final turkey = await Sprite.loadFromAsset('asset/turkey/sheet.json');
+  final sprite1 = await Sprite.load('asset/swords_man/sprite.json');
+  final mirror = await Sprite.load('asset/mirrored/sprite.json');
+  final sprite2 = await Sprite.load('asset/spritesheet/sheet.json');
+  final mangoTree = await Sprite.load('asset/mangotree/sheet.json');
+  final turkey = await Sprite.load('asset/turkey/sheet.json');
 
   runApp(
     Directionality(

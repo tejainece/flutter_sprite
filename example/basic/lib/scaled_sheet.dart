@@ -4,7 +4,7 @@ import 'package:flutter_sprite/flutter_sprite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final sprite2 = await Sprite.loadFromAsset('asset/spritesheet/sheet.json');
+  final sprite2 = await Sprite.load('asset/spritesheet/sheet.json');
 
   runApp(
     Directionality(

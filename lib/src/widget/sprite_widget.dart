@@ -118,19 +118,19 @@ class _SpriteWidgetState extends State<SpriteWidget> {
     }
 
     return SizedBox(
-        width: width,
-        height: height,
-        child: Stack(
-          children: [
-            Positioned(
-              /* TODO left: frame.anchor.x.toDouble() * (scale ?? 1),
+      width: width,
+      height: height,
+      child: Stack(
+        children: [
+          Positioned(
+            /* TODO left: frame.anchor.x.toDouble() * (scale ?? 1),
             top: frame.anchor.y.toDouble() * (scale ?? 1),*/
-              child: child,
-            ),
-            SizedBox(width: width, height: height),
-          ],
-        ),
-      );
+            child: child,
+          ),
+          SizedBox(width: width, height: height),
+        ],
+      ),
+    );
   }
 
   Duration _getNextDuration() {

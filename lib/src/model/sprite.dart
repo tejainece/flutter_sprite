@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:path/path.dart' as p;
+
 import 'package:flutter/services.dart';
 import 'package:flutter_sprite/flutter_sprite.dart';
+import 'package:path/path.dart' as p;
 
 class SpriteFrame {
   final ui.Image image;
@@ -87,8 +88,9 @@ class Sprite {
 
   // TODO load from http
 
-  static Future<Sprite> loadFromAsset(String specPath) async {
-    final jsonStr = await rootBundle.loadString(specPath, cache: false);
+  static Future<Sprite> loadFromAsset(String specPath,
+      {SpriteLoader loader = const AssetSpriteLoader()}) async {
+    final jsonStr = await loader.loadString(specPath);
     final json = jsonDecode(jsonStr);
     final spec = SpriteSpec.fromJson(json)!;
     final dir = p.dirname(specPath);
@@ -105,7 +107,7 @@ class Sprite {
 
       ui.Image image;
       if (!cache.containsKey(path)) {
-        image = await loadImage(path);
+        image = await loader.loadImage(path);
         cache[path] = image;
       } else {
         image = cache[path]!;
@@ -134,5 +136,32 @@ class Sprite {
       flip: spec.flip,
       data: spec.data,
     );
+  }
+}
+
+abstract class SpriteLoader {
+  Future<List<int>> loadBytes(String path);
+
+  Future<String> loadString(String path,
+      {Converter<List<int>, String> decoder = const Utf8Decoder()});
+
+  Future<ui.Image> loadImage(String path);
+}
+
+class AssetSpriteLoader implements SpriteLoader {
+  const AssetSpriteLoader();
+
+  Future<List<int>> loadBytes(String path) async =>
+      (await rootBundle.load(path)).buffer.asUint8List();
+
+  Future<String> loadString(String path,
+      {Converter<List<int>, String> decoder = const Utf8Decoder()}) async {
+    return decoder.convert(await loadBytes(path));
+  }
+
+  Future<ui.Image> loadImage(String path) async {
+    final codec = await ui
+        .instantiateImageCodec(Uint8List.fromList(await loadBytes(path)));
+    return (await codec.getNextFrame()).image;
   }
 }

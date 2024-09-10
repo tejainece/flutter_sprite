@@ -28,13 +28,6 @@ class ClippedImage extends StatelessWidget {
   }
 }
 
-Future<ui.Image> loadImage(String path) async {
-  final ByteData assetImageByteData = await rootBundle.load(path);
-  final codec =
-      await ui.instantiateImageCodec(assetImageByteData.buffer.asUint8List());
-  return (await codec.getNextFrame()).image;
-}
-
 class _RawPartImagePainter extends CustomPainter {
   final ui.Image image;
 

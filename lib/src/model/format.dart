@@ -14,6 +14,7 @@ class ImagePortion {
         'size': size.toJson(),
       };
 
+  @override
   bool operator ==(other) {
     if (other is ImagePortion) {
       return offset == other.offset && size == other.size;
@@ -111,7 +112,7 @@ class SpriteSpec {
         'interval': interval.inMilliseconds,
         'frames': frames.map((e) => e.toJson()).toList(),
         'size': size.toJson(),
-        if (anchor != Point<num>(0, 0)) 'anchor': anchor.toJson(),
+        if (anchor != Offset(0, 0)) 'anchor': anchor.toJson(),
         if (flip) 'flip': flip,
         if (refScale != null) 'refScale': refScale,
         if (data.isNotEmpty) 'data': data,

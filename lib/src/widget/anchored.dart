@@ -23,8 +23,7 @@ class Anchored extends StatelessWidget {
       required this.child,
       this.left = true,
       this.top = true,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   Widget build(BuildContext context) {

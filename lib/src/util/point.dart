@@ -25,7 +25,7 @@ extension PointExt on Point<num> {
         other, 'other', 'cannot divide a point with ${other.runtimeType}');
   }
 
-  String toJson() => '${x}:${y}';
+  String toJson() => '$x:$y';
 
   static Point<num>? fromJson(String? str) {
     if (str == null) return null;
@@ -65,7 +65,7 @@ extension SizeExt on Size {
 
   Size divide(num other) => Size(width / other, height / other);
 
-  String toJson() => '${width}:${height}';
+  String toJson() => '$width:$height';
 
   static Size? fromJson(String? str) {
     if (str == null) return null;
@@ -105,7 +105,7 @@ extension OffsetExt on Offset {
     }
   }
 
-  String toJson() => '${dx}:${dy}';
+  String toJson() => '$dx:$dy';
 
   static Offset? fromJson(String? str) {
     if (str == null) return null;

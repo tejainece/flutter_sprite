@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_sprite/src/model/format.dart';
 import 'dart:ui' as ui;
 
@@ -9,11 +8,10 @@ class ClippedImage extends StatelessWidget {
   final Size size;
 
   const ClippedImage(
-      {Key? key,
+      {super.key,
       required this.image,
       required this.portion,
-      required this.size})
-      : super(key: key);
+      required this.size});
 
   @override
   Widget build(BuildContext context) {

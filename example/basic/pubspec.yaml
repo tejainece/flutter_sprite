@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.5
 
 dev_dependencies:
+  lints: ^5.0.0
 
 dependency_overrides:
   flutter_sprite:

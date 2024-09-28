@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_sprite/src/widget/image_clipper.dart';
 import 'package:flutter_sprite/src/model/sprite.dart';
+import 'package:flutter_sprite/src/widget/image_clipper.dart';
 
 typedef SpriteWidgetReady = void Function(SpriteController controller);
 
@@ -32,14 +32,13 @@ class SpriteWidget extends StatefulWidget {
       this.onReady,
       this.onFinish,
       this.syncAnimationOnSpriteChange = true,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
-  _SpriteWidgetState createState() => _SpriteWidgetState();
+  SpriteWidgetState createState() => SpriteWidgetState();
 }
 
-class _SpriteWidgetState extends State<SpriteWidget> {
+class SpriteWidgetState extends State<SpriteWidget> {
   late SpriteController spriteController;
 
   Timer? _timer;
@@ -195,11 +194,11 @@ class _SpriteWidgetState extends State<SpriteWidget> {
 }
 
 class SpriteController {
-  final _SpriteWidgetState _state;
+  final SpriteWidgetState _state;
 
   final _sizeChangeController = StreamController<Size>.broadcast();
 
-  SpriteController(this._state);
+  SpriteController(SpriteWidgetState state) : _state = state;
 
   Stream<Size> get onSizeChange => _sizeChangeController.stream;
 

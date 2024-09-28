@@ -99,7 +99,7 @@ class Sprite {
     }
 
     for (final frameSpec in spec.frames) {
-      final path = dir + '/' + frameSpec.uri;
+      final path = '$dir/${frameSpec.uri}';
 
       ui.Image image;
       if (!cache.containsKey(path)) {
@@ -157,6 +157,7 @@ mixin SpriteLoader {
 class AssetSpriteLoader with SpriteLoader {
   const AssetSpriteLoader();
 
+  @override
   Future<List<int>> loadBytes(String path) async =>
       (await rootBundle.load(path)).buffer.asUint8List();
 }

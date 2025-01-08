@@ -10,6 +10,8 @@ extension PointExt on Point<num> {
 
   Offset get o => Offset(x.toDouble(), y.toDouble());
 
+  Radius get r => Radius.elliptical(x.toDouble(), y.toDouble());
+
   Point<double> operator /(other) {
     if (other == null) {
       throw ArgumentError.notNull('other');

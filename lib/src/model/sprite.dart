@@ -72,8 +72,12 @@ class Sprite {
   late final Duration duration =
       frames.fold(Duration(), (p, e) => p + (e.interval ?? interval));
 
-  Offset calcPoint(Offset offset, Offset worldAnchor, double scale, Size size,
-      Offset point) {
+  Offset calcPoint(
+      {required Offset offset,
+      required Offset worldAnchor,
+      required double scale,
+      required Size size,
+      required Offset point}) {
     // point = anchor - point;
     if (flip) {
       worldAnchor = Offset(size.width - worldAnchor.dx, worldAnchor.dy);
@@ -138,8 +142,7 @@ class Sprite {
 mixin SpriteLoader {
   Future<List<int>> loadBytes(String path);
 
-  Future<String> loadString(String path,
-      {Encoding decoder = utf8}) async {
+  Future<String> loadString(String path, {Encoding decoder = utf8}) async {
     final bytes = await loadBytes(path);
     return utf8.decoder.convert(bytes);
   }

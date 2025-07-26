@@ -117,12 +117,12 @@ class Sprite {
 
       Offset translate = Offset(0, 0);
       if (frameSpec.anchor != null) {
-        translate = anchor - frameSpec.anchor!;
+        translate = anchor - frameSpec.anchor!.o;
       }
 
       frames.add(SpriteFrame(image,
           translate: translate,
-          anchor: frameSpec.anchor ?? spec.anchor,
+          anchor: frameSpec.anchor?.o ?? spec.anchor,
           interval: frameSpec.interval,
           portion: portion));
     }

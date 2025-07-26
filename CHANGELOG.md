@@ -1,10 +1,13 @@
 # Changelog
 
+## 4.0.1
+
++ Short hard format for describing sprite sheet grid
+
 ## 4.0.0
 
 *Breaking changes*:
 + "sprites" property in JSON spec is renamed to "frames"
-+ 
 
 ## 3.0.5
 

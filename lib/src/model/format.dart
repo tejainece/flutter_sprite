@@ -2,80 +2,129 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter_sprite/flutter_sprite.dart';
 
-class ImagePortion {
-  final Point<num> offset;
+sealed class ISpriteFrameSpec {
+  List<SpriteFrameSpec> get frames;
 
-  final Point<num> size;
+  Map<String, dynamic> toJson();
 
-  ImagePortion(this.offset, this.size);
-
-  Map<String, dynamic> toJson() => {
-        'offset': offset.toJson(),
-        'size': size.toJson(),
-      };
-
-  @override
-  bool operator ==(other) {
-    if (other is ImagePortion) {
-      return offset == other.offset && size == other.size;
+  static ISpriteFrameSpec? fromJson(Map? map) {
+    if (map == null) return null;
+    switch (map['type']) {
+      case 'grid':
+        return SpriteFrameGridSpec.fromJson(map);
+      case null || 'single':
+        return SpriteFrameSpec.fromJson(map);
+      default:
+        throw Exception('invalid sprite frame type: ${map['type']}');
     }
-    return false;
-  }
-
-  Rectangle<num> get rectangle => Rectangle<num>.fromPoints(offset, size);
-
-  @override
-  int get hashCode => Object.hash(offset.x, offset.y, size.x, size.y);
-
-  static ImagePortion? fromJson(Map? m) {
-    if (m == null) {
-      return null;
-    }
-
-    if (m['offset'] == null) {
-      throw Exception('offset is mandatory');
-    } else if (m['offset'] is! String) {
-      throw Exception('invalid offset');
-    }
-    if (m['size'] == null) {
-      throw Exception('size is mandatory');
-    } else if (m['size'] is! String) {
-      throw Exception('invalid size');
-    }
-    return ImagePortion(
-        PointExt.fromJson(m['offset'])!, PointExt.fromJson(m['size'])!);
   }
 }
 
-class SpriteFrameSpec {
+class SpriteFrameGridSpec implements ISpriteFrameSpec {
+  final String uri;
+  final int rows;
+  final int columns;
+  final Point<int> gridOffset;
+  final Point<int> size;
+  final Point<int>? anchor;
+  final Duration? interval;
+
+  SpriteFrameGridSpec(
+    this.uri, {
+    required this.rows,
+    required this.columns,
+    required this.gridOffset,
+    required this.size,
+    required this.anchor,
+    required this.interval,
+  });
+
+  @override
+  late final List<SpriteFrameSpec> frames = () {
+    final frames = <SpriteFrameSpec>[];
+    for (var i = 0; i < rows; i++) {
+      for (var j = 0; j < columns; j++) {
+        frames.add(
+          SpriteFrameSpec(
+            uri,
+            anchor: anchor,
+            interval: interval,
+            portion: ImagePortion(
+              gridOffset + Point(j * size.x, i * size.y),
+              size,
+            ),
+          ),
+        );
+      }
+    }
+    return frames;
+  }();
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'type': 'grid',
+    'uri': uri,
+    'rows': rows,
+    'cols': columns,
+    'gridOffset': ?(gridOffset == Point<int>(0, 0)
+        ? null
+        : gridOffset.toJson()),
+    'size': size.toJson(),
+    'anchor': ?anchor?.toJson(),
+    'interval': ?interval?.inMilliseconds,
+  };
+
+  static SpriteFrameGridSpec? fromJson(Map? map) {
+    if (map == null) return null;
+    return SpriteFrameGridSpec(
+      map['uri'],
+      rows: map['rows'],
+      columns: map['cols'],
+      gridOffset:
+          PointIntExt.fromNullJson(map['gridOffset']) ?? Point<int>(0, 0),
+      size: PointIntExt.fromJson(map['size']),
+      anchor: PointIntExt.fromNullJson(map['anchor']),
+      interval: map['interval'] != null
+          ? Duration(milliseconds: map['interval'])
+          : null,
+    );
+  }
+}
+
+class SpriteFrameSpec implements ISpriteFrameSpec {
   final String uri;
 
-  final Offset? anchor;
+  final Point<int>? anchor;
 
   final ImagePortion? portion;
 
   final Duration? interval;
 
-  SpriteFrameSpec(this.uri,
-      {required this.anchor, this.portion, this.interval});
+  SpriteFrameSpec(
+    this.uri, {
+    required this.anchor,
+    this.portion,
+    this.interval,
+  });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'uri': uri,
-      if (anchor != null) 'anchor': anchor!.toJson(),
-      if (portion != null) 'portion': portion!.toJson(),
-      if (interval != null) 'interval': interval!.inMilliseconds,
-    };
-  }
+  @override
+  late final List<SpriteFrameSpec> frames = [this];
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'type': 'single',
+    'uri': uri,
+    'anchor': ?anchor?.toJson(),
+    'portion': ?portion?.toJson(),
+    'interval': ?interval?.inMilliseconds,
+  };
 
   static SpriteFrameSpec? fromJson(Map? map) {
-    if (map == null) {
-      return null;
-    }
+    if (map == null) return null;
     return SpriteFrameSpec(
       map['uri'],
-      anchor: OffsetExt.fromJson(map['anchor']),
-      portion: ImagePortion.fromJson(map['portion']),
+      anchor: PointIntExt.fromNullJson(map['anchor']),
+      portion: ImagePortion.fromNullJson(map['portion']),
       interval: map['interval'] != null
           ? Duration(milliseconds: map['interval'])
           : null,
@@ -90,7 +139,7 @@ class SpriteSpec {
 
   final Offset anchor;
 
-  final List<SpriteFrameSpec> frames;
+  final List<ISpriteFrameSpec> framePtr;
 
   final bool flip;
 
@@ -98,30 +147,34 @@ class SpriteSpec {
 
   final Map<String, dynamic> data;
 
-  SpriteSpec(
-      {required this.frames,
-      required this.interval,
-      required this.size,
-      Offset? anchor,
-      required this.flip,
-      this.refScale,
-      required this.data})
-      : anchor = anchor ?? Offset(0, 0);
+  SpriteSpec({
+    required this.framePtr,
+    required this.interval,
+    required this.size,
+    Offset? anchor,
+    required this.flip,
+    this.refScale,
+    required this.data,
+  }) : anchor = anchor ?? Offset(0, 0);
+
+  Iterable<SpriteFrameSpec> get frames sync* {
+    for (final frame in framePtr) {
+      yield* frame.frames;
+    }
+  }
 
   Map<String, dynamic> toJson() => {
-        'interval': interval.inMilliseconds,
-        'frames': frames.map((e) => e.toJson()).toList(),
-        'size': size.toJson(),
-        if (anchor != Offset(0, 0)) 'anchor': anchor.toJson(),
-        if (flip) 'flip': flip,
-        if (refScale != null) 'refScale': refScale,
-        if (data.isNotEmpty) 'data': data,
-      };
+    'interval': interval.inMilliseconds,
+    'frames': framePtr.map((e) => e.toJson()).toList(),
+    'size': size.toJson(),
+    if (anchor != Offset(0, 0)) 'anchor': anchor.toJson(),
+    if (flip) 'flip': flip,
+    if (refScale != null) 'refScale': refScale,
+    if (data.isNotEmpty) 'data': data,
+  };
 
   static SpriteSpec? fromJson(Map? map) {
-    if (map == null) {
-      return null;
-    }
+    if (map == null) return null;
 
     // Validate sprites
     if (map['frames'] == null) {
@@ -143,19 +196,63 @@ class SpriteSpec {
       throw Exception('missing or invalid size property on sprite sheet');
     }
 
-    final anchor = OffsetExt.fromJson(map['anchor']);
+    final anchor = OffsetExt.fromNullJson(map['anchor']);
 
     return SpriteSpec(
       interval: Duration(milliseconds: map['interval']),
-      size: SizeExt.fromJson(map['size'])!,
+      size: SizeExt.fromNullJson(map['size'])!,
       anchor: anchor,
       flip: map['flip'] ?? false,
       refScale: map['refScale'],
       data: map['data'] ?? {},
-      frames: (map['frames'] as List)
+      framePtr: (map['frames'] as List)
           .cast<Map>()
-          .map((e) => SpriteFrameSpec.fromJson(e)!)
+          .map((e) => ISpriteFrameSpec.fromJson(e)!)
           .toList(),
+    );
+  }
+}
+
+class ImagePortion {
+  final Point<num> offset;
+
+  final Point<num> size;
+
+  ImagePortion(this.offset, this.size);
+
+  Map<String, dynamic> toJson() => {
+    'offset': offset.toJson(),
+    'size': size.toJson(),
+  };
+
+  @override
+  bool operator ==(other) {
+    if (other is ImagePortion) {
+      return offset == other.offset && size == other.size;
+    }
+    return false;
+  }
+
+  Rectangle<num> get rectangle => Rectangle<num>.fromPoints(offset, size);
+
+  @override
+  int get hashCode => Object.hash(offset.x, offset.y, size.x, size.y);
+
+  static ImagePortion? fromNullJson(Map? m) {
+    if (m == null) return null;
+    if (m['offset'] == null) {
+      throw Exception('offset is mandatory');
+    } else if (m['offset'] is! String) {
+      throw Exception('invalid offset');
+    }
+    if (m['size'] == null) {
+      throw Exception('size is mandatory');
+    } else if (m['size'] is! String) {
+      throw Exception('invalid size');
+    }
+    return ImagePortion(
+      PointExt.fromNullJson(m['offset'])!,
+      PointExt.fromNullJson(m['size'])!,
     );
   }
 }

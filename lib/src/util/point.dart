@@ -24,23 +24,42 @@ extension PointExt on Point<num> {
     }
 
     throw ArgumentError.value(
-        other, 'other', 'cannot divide a point with ${other.runtimeType}');
+      other,
+      'other',
+      'cannot divide a point with ${other.runtimeType}',
+    );
   }
 
   String toJson() => '$x:$y';
 
-  static Point<num>? fromJson(String? str) {
-    if (str == null) return null;
-
+  static Point<num> fromJson(String str) {
     final parts = str.split(':').map(num.tryParse).toList();
     if (parts.length != 2) {
-      throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
+      throw ArgumentError.value(str, 'str', 'invalid JSON Point format');
     } else if (parts.any((element) => element == null)) {
-      throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
+      throw ArgumentError.value(str, 'str', 'invalid JSON Point format');
     }
-
     return Point<num>(parts[0]!, parts[1]!);
   }
+
+  static Point<num>? fromNullJson(String? str) =>
+      str == null ? null : fromJson(str);
+}
+
+extension PointIntExt on Point<int> {
+  static Point<int> fromJson(String str) {
+    final parts = str.split(':').map(int.tryParse).toList();
+    if (parts.length != 2) {
+      throw ArgumentError.value(str, 'str', 'invalid JSON Point format');
+    } else if (parts.any((element) => element == null)) {
+      throw ArgumentError.value(str, 'str', 'invalid JSON Point format');
+    }
+
+    return Point<int>(parts[0]!, parts[1]!);
+  }
+
+  static Point<int>? fromNullJson(String? str) =>
+      str == null ? null : fromJson(str);
 }
 
 extension SizeExt on Size {
@@ -59,7 +78,10 @@ extension SizeExt on Size {
       return Size(width - other.dx, height - other.dy);
     } else {
       throw ArgumentError.value(
-          other, 'other', 'cannot subtract a size with ${other.runtimeType}');
+        other,
+        'other',
+        'cannot subtract a size with ${other.runtimeType}',
+      );
     }
   }
 
@@ -69,9 +91,7 @@ extension SizeExt on Size {
 
   String toJson() => '$width:$height';
 
-  static Size? fromJson(String? str) {
-    if (str == null) return null;
-
+  static Size fromJson(String str) {
     final parts = str.split(':').map(double.tryParse).toList();
     if (parts.length != 2) {
       throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
@@ -81,6 +101,8 @@ extension SizeExt on Size {
 
     return Size(parts[0]!, parts[1]!);
   }
+
+  static Size? fromNullJson(String? str) => str == null ? null : fromJson(str);
 }
 
 extension OffsetExt on Offset {
@@ -102,16 +124,17 @@ extension OffsetExt on Offset {
     } else if (other is Size) {
       return Offset(dx * other.width, dy * other.height);
     } else {
-      throw ArgumentError.value(other, 'other',
-          'cannot multiply an offset with ${other.runtimeType}');
+      throw ArgumentError.value(
+        other,
+        'other',
+        'cannot multiply an offset with ${other.runtimeType}',
+      );
     }
   }
 
   String toJson() => '$dx:$dy';
 
-  static Offset? fromJson(String? str) {
-    if (str == null) return null;
-
+  static Offset fromJson(String str) {
     final parts = str.split(':').map(double.tryParse).toList();
     if (parts.length != 2) {
       throw ArgumentError.value(str, 'v', 'invalid JSON Point format');
@@ -121,6 +144,9 @@ extension OffsetExt on Offset {
 
     return Offset(parts[0]!, parts[1]!);
   }
+
+  static Offset? fromNullJson(String? str) =>
+      str == null ? null : fromJson(str);
 }
 
 extension RectangleExt on Rectangle<num> {
@@ -133,5 +159,9 @@ extension RectangleExt on Rectangle<num> {
   }
 
   Rect get rect => Rect.fromLTWH(
-      left.toDouble(), top.toDouble(), width.toDouble(), height.toDouble());
+    left.toDouble(),
+    top.toDouble(),
+    width.toDouble(),
+    height.toDouble(),
+  );
 }

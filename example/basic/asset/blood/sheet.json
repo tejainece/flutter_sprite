@@ -1,0 +1,16 @@
+{
+  "interval": 35,
+  "anchor": "128:128",
+  "size": "256:256",
+  "refScale": 256,
+  "frames": [
+    {
+      "type": "grid",
+      "uri": "blood.png",
+      "rows": 4,
+      "cols": 4,
+      "gridOffset": "0:0",
+      "size": "256:256"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ void main() async {
   final sprite2 = await Sprite.load('asset/spritesheet/sheet.json');
   final mangoTree = await Sprite.load('asset/mangotree/sheet.json');
   final turkey = await Sprite.load('asset/turkey/sheet.json');
+  final blood = await Sprite.load('asset/blood/sheet.json');
 
   runApp(
     Directionality(
@@ -20,6 +21,7 @@ void main() async {
           Container(color: Colors.blue, child: SpriteWidget(sprite2)),
           Container(color: Colors.blue, child: SpriteWidget(mirror)),
           Container(color: Colors.blue, child: SpriteWidget(sprite1)),
+          Container(child: SpriteWidget(blood)),
           SpriteWidget(sprite2, onReady: (controller) {
             Timer(const Duration(seconds: 10), () {
               controller.pause();

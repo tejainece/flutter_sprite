@@ -42,15 +42,15 @@ class SpriteFrameGridSpec implements ISpriteFrameSpec {
   @override
   late final List<SpriteFrameSpec> frames = () {
     final frames = <SpriteFrameSpec>[];
-    for (var i = 0; i < rows; i++) {
-      for (var j = 0; j < columns; j++) {
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < columns; c++) {
         frames.add(
           SpriteFrameSpec(
             uri,
             anchor: anchor,
             interval: interval,
             portion: ImagePortion(
-              gridOffset + Point(j * size.x, i * size.y),
+              gridOffset + Point(c * size.x, r * size.y),
               size,
             ),
           ),
@@ -233,7 +233,8 @@ class ImagePortion {
     return false;
   }
 
-  Rectangle<num> get rectangle => Rectangle<num>.fromPoints(offset, size);
+  Rectangle<num> get rectangle =>
+      Rectangle<num>(offset.x, offset.y, size.x, size.y);
 
   @override
   int get hashCode => Object.hash(offset.x, offset.y, size.x, size.y);

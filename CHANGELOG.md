@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.2
+
++ `ImagePortion.rectangle` bug fix
+
 ## 4.0.1
 
 + Short hard format for describing sprite sheet grid
